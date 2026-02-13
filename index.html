@@ -54,6 +54,7 @@
 
     <div id="toast-container" class="fixed bottom-6 right-6 z-[200] space-y-2 max-w-sm"></div>
 
+    <!-- Sidebar -->
     <aside class="w-72 border-r border-slate-900 flex flex-col p-6 hidden lg:flex bg-slate-950/50">
         <div class="flex items-center gap-3 mb-10 px-2">
             <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/20">
@@ -70,12 +71,12 @@
                 <i data-lucide="clapperboard" class="w-5 h-5"></i> Content Library
             </button>
             <button onclick="changeTab('automations')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="automations">
-                <i data-lucide="message-square-more" class="w-5 h-5"></i> Active Rules
+                <i data-lucide="message-square-more" class="w-5 h-5"></i> Trigger Rules
             </button>
             <button onclick="changeTab('logs')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="logs">
-                <i data-lucide="scroll-text" class="w-5 h-5"></i> Event Logs
+                <i data-lucide="scroll-text" class="w-5 h-5"></i> Activity Logs
             </button>
-            <div class="pt-4 pb-2 px-4"><p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">System</p></div>
+            <div class="pt-4 pb-2 px-4"><p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest text-[8px]">System Config</p></div>
             <button onclick="changeTab('settings')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="settings">
                 <i data-lucide="settings-2" class="w-5 h-5"></i> Connection
             </button>
@@ -96,12 +97,15 @@
         </div>
     </aside>
 
+    <!-- Main View -->
     <main class="flex-1 overflow-y-auto bg-slate-950/20">
         <header class="h-16 border-b border-slate-900 px-8 flex items-center justify-between sticky top-0 glass z-50">
             <div class="flex items-center gap-4"><h1 class="text-sm font-bold text-slate-400 uppercase tracking-widest" id="headerTitle">Dashboard</h1></div>
-            <div id="live-badge" class="px-3 py-1.5 rounded-full bg-slate-900 text-slate-500 border border-slate-800 text-[10px] font-bold flex items-center gap-2">
-                <div id="badge-dot" class="w-2 h-2 bg-slate-600 rounded-full"></div>
-                <span id="badge-text">INITIALIZING</span>
+            <div class="flex items-center gap-3">
+                 <div id="live-badge" class="px-3 py-1.5 rounded-full bg-slate-900 text-slate-500 border border-slate-800 text-[10px] font-bold flex items-center gap-2">
+                    <div id="badge-dot" class="w-2 h-2 bg-slate-600 rounded-full"></div>
+                    <span id="badge-text">INITIALIZING</span>
+                </div>
             </div>
         </header>
 
@@ -144,6 +148,7 @@
                 </div>
             </div>
 
+            <!-- Content Library -->
             <div id="view-media" class="tab-content space-y-8">
                 <div>
                     <h2 class="text-3xl font-black text-white">Content Library</h2>
@@ -154,11 +159,12 @@
                 </div>
             </div>
 
+            <!-- Automation Rules -->
             <div id="view-automations" class="tab-content space-y-6">
                 <div class="flex justify-between items-end">
                     <div>
-                        <h2 class="text-3xl font-black text-white">Trigger Rules</h2>
-                        <p class="text-slate-500 text-sm mt-1">Comma-separated keywords are supported. Rules with thumbnails only fire on that specific post.</p>
+                        <h2 class="text-3xl font-black text-white">Active Rules</h2>
+                        <p class="text-slate-500 text-sm mt-1">Rules with thumbnails only fire on that specific post.</p>
                     </div>
                     <button onclick="openRuleModal()" class="bg-indigo-600 px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-600/20">
                         <i data-lucide="plus" class="w-5 h-5"></i> New Rule
@@ -167,6 +173,7 @@
                 <div id="rules-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
+            <!-- Activity Logs -->
             <div id="view-logs" class="tab-content space-y-4">
                 <div class="glass rounded-3xl overflow-hidden shadow-2xl border-slate-800">
                     <div class="p-6 border-b border-slate-900 bg-slate-900/30 flex justify-between items-center">
@@ -189,43 +196,72 @@
                 </div>
             </div>
 
+            <!-- Settings & Connection -->
             <div id="view-settings" class="tab-content space-y-8">
-                <div class="bg-indigo-600/10 border border-indigo-500/30 p-8 rounded-[2rem] space-y-4 max-w-2xl shadow-xl">
-                    <div class="flex items-center gap-3 text-indigo-400"><i data-lucide="fingerprint" class="w-6 h-6"></i><h3 class="font-bold">System ID (Required for DMs)</h3></div>
-                    <p class="text-slate-400 text-xs leading-relaxed">Copy this ID and save it as <code class="text-indigo-300">FIREBASE_USER_ID</code> in Vercel settings.</p>
-                    <div class="flex gap-2">
-                        <input type="text" id="full-user-id-field" readonly class="flex-1 p-4 rounded-xl font-mono text-xs text-indigo-300 border border-indigo-500/20 bg-indigo-950/30" value="Syncing...">
-                        <button onclick="copyFullId()" class="bg-indigo-600 px-6 rounded-xl font-bold text-xs">Copy</button>
+                <!-- DIAGNOSTICS & SYSTEM ID -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-indigo-600/10 border border-indigo-500/30 p-8 rounded-[2.5rem] space-y-4 shadow-xl">
+                        <div class="flex items-center gap-3 text-indigo-400"><i data-lucide="fingerprint" class="w-6 h-6"></i><h3 class="font-bold">System ID (Webhook ID)</h3></div>
+                        <p class="text-slate-400 text-[10px] leading-relaxed italic">Requirement: Must be saved as FIREBASE_USER_ID in Vercel.</p>
+                        <div class="flex gap-2">
+                            <input type="text" id="full-user-id-field" readonly class="flex-1 p-4 rounded-xl font-mono text-xs text-indigo-300 border border-indigo-500/20 bg-indigo-950/30" value="Syncing...">
+                            <button onclick="copyFullId()" class="bg-indigo-600 px-6 rounded-xl font-bold text-xs">Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem] space-y-4 shadow-xl">
+                        <div class="flex items-center gap-3 text-slate-300"><i data-lucide="webhook" class="w-6 h-6"></i><h3 class="font-bold">Meta Callback URL</h3></div>
+                        <p class="text-slate-500 text-[10px] italic">Requirement: Must be pasted into Meta Webhooks dashboard.</p>
+                        <div class="flex gap-2">
+                            <input type="text" id="webhook-url-field" readonly class="flex-1 p-4 rounded-xl font-mono text-[10px] text-slate-400 border border-slate-800 bg-slate-950/50" value="Loading...">
+                            <button onclick="copyWebhookUrl()" class="bg-slate-800 px-6 rounded-xl font-bold text-xs hover:bg-slate-700">Copy</button>
+                        </div>
                     </div>
                 </div>
+
                 <div class="glass p-10 rounded-[2.5rem] space-y-10 max-w-2xl border-indigo-500/10 shadow-2xl">
                     <div class="flex items-center gap-5">
                         <div class="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center text-indigo-400 border border-indigo-500/20"><i data-lucide="settings-2" class="w-8 h-8"></i></div>
-                        <div><h3 class="text-2xl font-black text-white tracking-tight">Sync Meta Connection</h3><p class="text-slate-500 text-sm">Use your Professional EAAB token and Numeric ID.</p></div>
+                        <div><h3 class="text-2xl font-black text-white tracking-tight">Sync Meta Connection</h3><p class="text-slate-500 text-sm">Connect your Instagram Account ID and Professional Token.</p></div>
                     </div>
                     <div class="space-y-6">
-                        <div class="space-y-3"><label class="text-[10px] text-slate-500 uppercase font-black tracking-widest">Professional Token (EAAB...)</label><input type="password" id="field-token" class="w-full p-5 rounded-2xl outline-none border border-slate-800" placeholder="Paste EAAB token here"></div>
-                        <div class="space-y-3"><label class="text-[10px] text-slate-500 uppercase font-black tracking-widest">Account ID</label><input type="text" id="field-pageid" class="w-full p-5 rounded-2xl outline-none border border-slate-800" placeholder="e.g. 1784..."></div>
-                        <button onclick="saveMetaSettings()" id="settings-save-btn" class="bg-indigo-600 w-full py-5 rounded-2xl font-black text-white shadow-xl">Save & Sync Profile</button>
+                        <div class="space-y-3">
+                            <label class="text-[10px] text-slate-500 uppercase font-black tracking-widest">Professional Token (EAAB...)</label>
+                            <input type="password" id="field-token" class="w-full p-5 rounded-2xl outline-none border border-slate-800 focus:ring-2 focus:ring-indigo-500" placeholder="Paste EAAB token here">
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-[10px] text-slate-500 uppercase font-black tracking-widest">Numeric Account ID</label>
+                            <input type="text" id="field-pageid" class="w-full p-5 rounded-2xl outline-none border border-slate-800 focus:ring-2 focus:ring-indigo-500" placeholder="e.g. 1784...">
+                        </div>
+                        <button onclick="saveMetaSettings()" id="settings-save-btn" class="bg-indigo-600 w-full py-5 rounded-2xl font-black text-white shadow-xl hover:bg-indigo-500 transition-all">Save & Sync Profile</button>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- Modal -->
     <div id="modal-rule" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-[100] hidden flex items-center justify-center p-6">
         <div class="glass w-full max-w-xl rounded-[3rem] p-10 space-y-8 shadow-2xl border-white/5 relative">
             <div class="flex justify-between items-center text-white">
                 <div><h3 class="text-2xl font-black tracking-tight" id="modal-title">New Automation Rule</h3><p id="modal-subtitle" class="text-slate-500 text-xs mt-1">Global Rule</p></div>
                 <button onclick="closeRuleModal()" class="p-2 bg-slate-800 rounded-full text-slate-400 hover:text-white transition-all"><i data-lucide="x"></i></button>
             </div>
+            
             <div id="modal-media-preview" class="hidden flex items-center gap-4 p-4 bg-indigo-600/10 border border-indigo-500/20 rounded-2xl">
                 <img id="target-thumb" class="w-16 h-16 rounded-xl object-cover">
                 <div><p class="text-xs font-bold text-white uppercase tracking-widest">Targeting specific post</p><p id="target-caption" class="text-[10px] text-slate-400 italic line-clamp-1"></p></div>
             </div>
+
             <div class="space-y-6">
-                <div><label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Trigger Keywords (Comma separated)</label><input type="text" id="input-keyword" class="w-full p-5 rounded-2xl font-mono text-indigo-400 text-lg uppercase outline-none bg-slate-900" placeholder="e.g. LINK, INFO, PRICE"></div>
-                <div><label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Automated DM Response</label><textarea id="input-message" rows="5" class="w-full p-5 rounded-2xl text-white outline-none resize-none bg-slate-900" placeholder="Type message..."></textarea></div>
+                <div>
+                    <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Keywords (comma separated)</label>
+                    <input type="text" id="input-keyword" class="w-full p-5 rounded-2xl font-mono text-indigo-400 text-lg uppercase outline-none bg-slate-900" placeholder="LINK, PRICE, INFO">
+                </div>
+                <div>
+                    <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Automated DM Response</label>
+                    <textarea id="input-message" rows="5" class="w-full p-5 rounded-2xl text-white outline-none resize-none bg-slate-900" placeholder="Type message..."></textarea>
+                </div>
                 <button onclick="saveRuleToCloud()" id="btn-save-rule" class="bg-indigo-600 w-full py-6 rounded-[2rem] font-black text-lg text-white shadow-2xl mt-4 active:scale-95 transition-all">Activate Automation</button>
             </div>
         </div>
@@ -250,7 +286,11 @@
             if (window.auth) {
                 clearInterval(checkAuth);
                 onAuthStateChanged(window.auth, (user) => {
-                    if (user) { document.getElementById('full-user-id-field').value = user.uid; setupStreams(user.uid); }
+                    if (user) {
+                        document.getElementById('full-user-id-field').value = user.uid;
+                        document.getElementById('webhook-url-field').value = `${window.location.origin}/api/webhooks/instagram`;
+                        setupStreams(user.uid);
+                    }
                     else signInAnonymously(window.auth);
                 });
             }
@@ -258,7 +298,7 @@
 
         async function fetchInstagramDetails(token, id) {
             if (!token) return;
-            document.getElementById('status-text').innerText = "Connecting...";
+            document.getElementById('status-text').innerText = "Meta Connection...";
             document.getElementById('status-dot').className = 'w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse';
 
             try {
@@ -334,7 +374,7 @@
                                 </div>
                                 <button onclick="window.removeRule('${dSnap.id}')" class="text-slate-600 hover:text-rose-500 p-2 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                             </div>
-                            ${isSpecific ? `<div class="flex items-center gap-3 p-3 bg-black/30 rounded-xl border border-white/5"><img src="${r.media_thumb}" class="w-10 h-10 rounded-lg object-cover"><p class="text-[10px] text-slate-500 line-clamp-1 italic text-[9px]">Targeting Active</p></div>` : ''}
+                            ${isSpecific ? `<div class="flex items-center gap-3 p-3 bg-black/30 rounded-xl border border-white/5"><img src="${r.media_thumb}" class="w-10 h-10 rounded-lg object-cover"><p class="text-[9px] text-slate-500 italic">Targeting Active</p></div>` : ''}
                             <p class="text-sm text-slate-300 line-clamp-3 italic leading-relaxed">"${r.message}"</p>
                         </div>
                     `;
@@ -350,10 +390,10 @@
                     const time = log.timestamp ? new Date(log.timestamp.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Now';
                     body.innerHTML += `
                         <tr class="hover:bg-indigo-500/5 transition-all text-xs">
-                            <td class="px-8 py-6 text-slate-500 font-mono">${time}</td>
+                            <td class="px-8 py-6 text-slate-500 font-mono text-[10px]">${time}</td>
                             <td class="px-8 py-6 font-black text-white text-sm">@${log.user}</td>
-                            <td class="px-8 py-6 text-slate-400 italic">"${log.comment}"</td>
-                            <td class="px-8 py-6"><span class="px-4 py-1.5 rounded-full ${log.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} font-black uppercase text-[8px] tracking-widest border">${log.status}</span></td>
+                            <td class="px-8 py-6 text-slate-400 italic">"${log.comment}" ${log.error ? `<span class="text-rose-500 font-bold ml-2">Meta: ${log.error}</span>` : ''}</td>
+                            <td class="px-8 py-6"><span class="px-4 py-1.5 rounded-full ${log.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'} font-black uppercase text-[8px] tracking-widest border">${log.status}</span></td>
                         </tr>
                     `;
                 });
@@ -396,6 +436,7 @@
         };
 
         window.copyFullId = () => { const field = document.getElementById('full-user-id-field'); field.select(); document.execCommand('copy'); notify("Full ID copied!", false); };
+        window.copyWebhookUrl = () => { const field = document.getElementById('webhook-url-field'); field.select(); document.execCommand('copy'); notify("Webhook URL copied!", false); };
         window.changeTab = (id) => { document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.getElementById('view-' + id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active-tab'); b.classList.add('text-slate-400'); }); const active = document.querySelector(`[data-tab="${id}"]`); active.classList.add('active-tab'); active.classList.remove('text-slate-400'); document.getElementById('headerTitle').innerText = id.toUpperCase(); };
         window.openRuleModal = (mediaId = null, url = null, caption = null) => {
             document.getElementById('modal-rule').classList.remove('hidden');
