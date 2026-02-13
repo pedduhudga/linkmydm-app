@@ -75,7 +75,7 @@
                 <i data-lucide="clapperboard" class="w-5 h-5"></i> Content Library
             </button>
             <button onclick="changeTab('automations')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="automations">
-                <i data-lucide="message-square-more" class="w-5 h-5"></i> Automation Rules
+                <i data-lucide="message-square-more" class="w-5 h-5"></i> Keyword Rules
             </button>
             <button onclick="changeTab('logs')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="logs">
                 <i data-lucide="scroll-text" class="w-5 h-5"></i> Event Logs
@@ -86,13 +86,14 @@
             </button>
         </nav>
 
+        <!-- Profile Section -->
         <div class="mt-auto p-4 glass rounded-2xl flex items-center gap-3 border-indigo-500/20">
             <div id="sidebar-img-container" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-700 shadow-inner">
                 <i data-lucide="user" class="w-5 h-5 text-slate-500" id="sidebar-icon"></i>
                 <img id="sidebar-avatar" class="w-full h-full object-cover hidden" src="" alt="" onload="this.classList.add('loaded')">
             </div>
             <div class="overflow-hidden">
-                <p class="text-xs font-bold truncate text-white" id="sidebar-username">Connecting...</p>
+                <p class="text-xs font-bold truncate text-white" id="sidebar-username">Connecting Meta...</p>
                 <div class="flex items-center gap-1.5">
                     <span id="status-dot" class="w-1.5 h-1.5 bg-slate-600 rounded-full"></span>
                     <p class="text-[10px] text-slate-500" id="status-text">Disconnected</p>
@@ -117,6 +118,7 @@
 
         <div class="p-8 max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
             
+            <!-- Tab: Dashboard -->
             <div id="view-dashboard" class="tab-content active space-y-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div class="glass p-6 rounded-3xl border-l-4 border-l-indigo-500 shadow-xl">
@@ -140,7 +142,7 @@
                 <div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 rounded-[2.5rem] p-12 relative overflow-hidden shadow-2xl group">
                     <div class="relative z-10 max-w-lg">
                         <h2 class="text-4xl font-black mb-4 text-white leading-tight">Post-Level Targeting</h2>
-                        <p class="text-indigo-100 text-lg mb-8 opacity-90">LinkMyDM is ready. Create global rules for your account, or tap a Reel in the Library to set a specific automated response.</p>
+                        <p class="text-indigo-100 text-lg mb-8 opacity-90">Set generic rules for your account, or tap a post in the Library to create a unique response specifically for that content.</p>
                         <div class="flex gap-4">
                             <button onclick="openRuleModal()" class="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-bold hover:scale-105 shadow-xl active:scale-95 transition-all">
                                 + Add Global Rule
@@ -154,6 +156,7 @@
                 </div>
             </div>
 
+            <!-- Tab: Content Library -->
             <div id="view-media" class="tab-content space-y-8">
                 <div>
                     <h2 class="text-3xl font-black text-white">Content Library</h2>
@@ -167,6 +170,7 @@
                 </div>
             </div>
 
+            <!-- Tab: Active Rules -->
             <div id="view-automations" class="tab-content space-y-6">
                 <div class="flex justify-between items-end">
                     <div>
@@ -180,6 +184,7 @@
                 <div id="rules-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
+            <!-- Tab: Logs -->
             <div id="view-logs" class="tab-content space-y-4">
                 <div class="glass rounded-3xl overflow-hidden shadow-2xl border-slate-800">
                     <div class="p-6 border-b border-slate-900 bg-slate-900/30 flex justify-between items-center">
@@ -202,6 +207,7 @@
                 </div>
             </div>
 
+            <!-- Tab: Settings -->
             <div id="view-settings" class="tab-content space-y-8">
                 <div class="glass p-10 rounded-[2.5rem] space-y-10 max-w-2xl border-indigo-500/10 shadow-2xl">
                     <div class="flex items-center gap-5">
@@ -232,7 +238,7 @@
         </div>
     </main>
 
-    <!-- Modal -->
+    <!-- Automation Modal -->
     <div id="modal-rule" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-[100] hidden flex items-center justify-center p-6">
         <div class="glass w-full max-w-xl rounded-[3rem] p-10 space-y-8 shadow-2xl border-white/5 relative">
             <div class="flex justify-between items-center text-white">
@@ -254,7 +260,7 @@
             <div class="space-y-6">
                 <div>
                     <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Trigger Keywords (Comma separated)</label>
-                    <input type="text" id="input-keyword" class="w-full p-5 rounded-2xl font-mono text-indigo-400 text-lg uppercase outline-none focus:ring-2 focus:ring-indigo-500 border-none bg-slate-900" placeholder="e.g. LINK, INFO, PRICE">
+                    <input type="text" id="input-keyword" class="w-full p-5 rounded-2xl font-mono text-indigo-400 text-lg uppercase outline-none focus:ring-2 focus:ring-indigo-500 border-none bg-slate-900" placeholder="e.g. LINK, PRICE, INFO">
                     <p class="text-[9px] text-slate-600 mt-2 italic">Separating keywords by commas allows the bot to watch for multiple triggers at once.</p>
                 </div>
                 <div>
@@ -273,6 +279,7 @@
         import { onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         lucide.createIcons();
+        window.instaMediaCache = {}; // Cache to prevent SyntaxErrors from captions
         let currentTargetMedia = null;
 
         function notify(msg, isError = true) {
@@ -301,32 +308,37 @@
             document.getElementById('status-dot').className = 'w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse';
 
             try {
-                let baseUrl = token.startsWith('IGAAT') ? 'https://graph.instagram.com' : 'https://graph.facebook.com/v19.0';
+                // Determine base URL based on token type
+                const isBasic = token.startsWith('IGAAT');
+                const baseUrl = isBasic ? 'https://graph.instagram.com' : 'https://graph.facebook.com/v19.0';
                 
-                if (token.startsWith('IGAAT')) {
+                let finalIgId = id;
+
+                if (isBasic) {
                     const meRes = await fetch(`${baseUrl}/me?fields=id,username,profile_picture_url&access_token=${token}`);
                     const meData = await meRes.json();
                     if (meData.id) {
+                        finalIgId = meData.id;
                         updateProfileUI(meData);
                         const mediaRes = await fetch(`${baseUrl}/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&access_token=${token}`);
                         const mediaData = await mediaRes.json();
                         if (mediaData.data) renderMediaGrid(mediaData.data);
-                        return;
+                        return; // Done for basic tokens
+                    }
+                } else {
+                    // EAAB Logic
+                    if (!finalIgId || !finalIgId.startsWith('1784')) {
+                        const pageRes = await fetch(`${baseUrl}/${id}?fields=instagram_business_account&access_token=${token}`);
+                        const pageData = await pageRes.json();
+                        if (pageData.instagram_business_account) finalIgId = pageData.instagram_business_account.id;
                     }
                 }
 
-                let igId = id;
-                if (!igId || !igId.startsWith('1784')) {
-                    const pageRes = await fetch(`https://graph.facebook.com/v19.0/${id}?fields=instagram_business_account&access_token=${token}`);
-                    const pageData = await pageRes.json();
-                    if (pageData.instagram_business_account) igId = pageData.instagram_business_account.id;
-                }
-
-                const profileRes = await fetch(`https://graph.facebook.com/v19.0/${igId}?fields=username,name,profile_picture_url&access_token=${token}`);
+                const profileRes = await fetch(`${baseUrl}/${finalIgId}?fields=username,name,profile_picture_url&access_token=${token}`);
                 const profileData = await profileRes.json();
                 if (profileData.username) updateProfileUI(profileData);
 
-                const mediaRes = await fetch(`https://graph.facebook.com/v19.0/${igId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=30&access_token=${token}`);
+                const mediaRes = await fetch(`${baseUrl}/${finalIgId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=30&access_token=${token}`);
                 const mediaData = await mediaRes.json();
                 if (mediaData.data) renderMediaGrid(mediaData.data);
 
@@ -356,8 +368,11 @@
             grid.innerHTML = '';
             items.forEach(item => {
                 const url = item.thumbnail_url || item.media_url;
+                // Cache the item to avoid passing potentially broken strings into HTML onclick
+                window.instaMediaCache[item.id] = { id: item.id, url, caption: item.caption || '', permalink: item.permalink };
+                
                 grid.innerHTML += `
-                    <div class="insta-card glass rounded-[2.5rem] overflow-hidden border border-slate-800 shadow-2xl relative aspect-[4/5] group cursor-pointer" onclick="window.openRuleModal('${item.id}', '${url}', '${(item.caption || '').replace(/'/g, "\\'")}')">
+                    <div class="insta-card glass rounded-[2.5rem] overflow-hidden border border-slate-800 shadow-2xl relative aspect-[4/5] group" onclick="window.openRuleFromCache('${item.id}')">
                         <img src="${url}" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-all duration-700" loading="lazy" onload="this.classList.add('loaded')">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent p-6 flex flex-col justify-end">
                             <div class="flex items-center gap-2 mb-2">
@@ -370,6 +385,14 @@
             });
             lucide.createIcons();
         }
+
+        // Global function to open modal safely using cached object
+        window.openRuleFromCache = (id) => {
+            const item = window.instaMediaCache[id];
+            if(item) {
+                window.openRuleModal(item.id, item.url, item.caption);
+            }
+        };
 
         function setupStreams(uid) {
             const { collection, onSnapshot, doc, getDoc } = window.fb;
@@ -393,7 +416,7 @@
                             ${isSpecific ? `
                                 <div class="flex items-center gap-3 p-3 bg-black/30 rounded-xl border border-white/5">
                                     <img src="${r.media_thumb}" class="w-10 h-10 rounded-lg object-cover">
-                                    <p class="text-[10px] text-slate-500 line-clamp-1 italic text-[9px]">Targeting Active</p>
+                                    <p class="text-[10px] text-slate-500 line-clamp-1 italic text-[9px]">Post Targeting Active</p>
                                 </div>
                             ` : ''}
 
