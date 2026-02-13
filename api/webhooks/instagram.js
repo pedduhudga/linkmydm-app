@@ -1,4 +1,4 @@
-// --- LinkMyDM Pro Webhook (Production & Public Ready) ---
+// --- LinkMyDM Pro Webhook (Diagnostic & Debug Version) ---
 // Location: api/webhooks/instagram.js
 
 export default async function handler(req, res) {
@@ -8,6 +8,7 @@ export default async function handler(req, res) {
   // 1. Meta Handshake (Verification)
   if (req.method === 'GET') {
     if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === VERIFY_TOKEN) {
+      console.log("[DEBUG] Handshake successful.");
       return res.status(200).send(req.query['hub.challenge']);
     }
     return res.status(403).send('Verification failed');
@@ -15,25 +16,30 @@ export default async function handler(req, res) {
 
   // 2. Incoming Event Processing
   if (req.method === 'POST') {
-    res.status(200).json({ status: 'received' }); // Always acknowledge Meta first
+    res.status(200).json({ status: 'received' });
 
     const body = req.body;
+    // Log the raw body to Vercel console for deep debugging
+    console.log("[DEBUG] Incoming Payload:", JSON.stringify(body));
+
     if (body.object !== 'instagram') return;
 
     const entry = body.entry?.[0];
     const changes = entry?.changes?.[0]?.value;
 
-    // VALIDATION: We need text, a sender, and a post ID
     if (changes && changes.text && changes.from) {
       const commentText = changes.text.toUpperCase();
       const senderId = changes.from.id;
       const username = changes.from.username;
       const mediaId = changes.media?.id;
 
-      const accessToken = process.env.INSTAGRAM_ACCESS_TOKEN; // MUST be EAAB token
+      const accessToken = process.env.INSTAGRAM_ACCESS_TOKEN; 
       const userId = process.env.FIREBASE_USER_ID; 
 
-      if (!accessToken || !userId) return console.error("Keys missing in Vercel settings.");
+      if (!accessToken || !userId) {
+        console.error("[DEBUG] Missing Env Variables in Vercel settings.");
+        return;
+      }
 
       try {
         // Fetch rules from Firestore
@@ -41,12 +47,14 @@ export default async function handler(req, res) {
         const response = await fetch(firestoreUrl);
         const data = await response.json();
         
-        if (!data.documents) return;
-        const rules = data.documents.map(d => ({ id: d.name.split('/').pop(), ...d.fields }));
+        const rules = data.documents ? data.documents.map(d => ({ id: d.name.split('/').pop(), ...d.fields })) : [];
         
+        // --- DIAGNOSTIC LOGGING ---
+        // We log the comment to the dashboard immediately so the user knows the webhook is ALIVE
+        let statusMessage = "Checking Rules...";
+        let metaDetailedError = "";
+
         // --- MATCHING ENGINE ---
-        // Priority 1: Check for rules targeted to this specific Post ID
-        // Priority 2: Fallback to Global rules (media_id is null/empty)
         const matchedRule = rules.find(r => {
             const ruleMediaId = r.media_id?.stringValue;
             const keywordList = (r.keyword?.stringValue || "").split(',').map(k => k.trim().toUpperCase());
@@ -72,26 +80,38 @@ export default async function handler(req, res) {
 
           const dmData = await dmRes.json();
 
-          // --- LOG TO DASHBOARD ---
-          const logStatus = dmData.error ? "failed" : "sent";
-          const metaError = dmData.error ? dmData.error.message : null;
-          
-          await fetch(`https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/artifacts/linkmydm-personal/users/${userId}/logs`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              fields: {
-                user: { stringValue: username },
-                comment: { stringValue: changes.text },
-                status: { stringValue: logStatus },
-                error: { stringValue: metaError || "" },
-                timestamp: { timestampValue: new Date().toISOString() }
-              }
-            })
-          });
+          if (dmData.error) {
+            statusMessage = "failed";
+            metaDetailedError = `Meta API Error: ${dmData.error.message}`;
+            console.error("[DEBUG] Send Failure:", dmDetailedError);
+          } else {
+            statusMessage = "sent";
+            console.log("[DEBUG] Send Success to", username);
+          }
+        } else {
+          statusMessage = "ignored";
+          metaDetailedError = "No keyword match found for this post.";
+          console.log("[DEBUG] Comment ignored (no rule match).");
         }
+
+        // --- FINAL LOG TO DATABASE ---
+        // This ensures every comment heard by the server creates a row in your "Activity Logs"
+        await fetch(`https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/artifacts/linkmydm-personal/users/${userId}/logs`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fields: {
+              user: { stringValue: username },
+              comment: { stringValue: changes.text },
+              status: { stringValue: statusMessage },
+              error: { stringValue: metaDetailedError },
+              timestamp: { timestampValue: new Date().toISOString() }
+            }
+          })
+        });
+
       } catch (error) {
-        console.error("Webhook processing error:", error);
+        console.error("[DEBUG] Webhook Catch Block:", error);
       }
     }
   }
