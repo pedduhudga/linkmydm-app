@@ -135,7 +135,7 @@
                 <div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 rounded-[2.5rem] p-12 relative overflow-hidden shadow-2xl group">
                     <div class="relative z-10 max-w-lg">
                         <h2 class="text-4xl font-black mb-4 text-white leading-tight">Automation Active</h2>
-                        <p class="text-indigo-100 text-lg mb-8 opacity-90">LinkMyDM is ready to handle your herbicide inquiries. Define your keywords below to start the magic.</p>
+                        <p class="text-indigo-100 text-lg mb-8 opacity-90">LinkMyDM is ready to handle your inquiries. Define your keywords below to start the magic.</p>
                         <div class="flex gap-4">
                             <button onclick="openRuleModal()" class="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all shadow-xl active:scale-95">
                                 + Add Keyword Trigger
@@ -216,7 +216,7 @@
                         </div>
                         <div class="space-y-3">
                             <label class="text-[10px] text-slate-500 uppercase font-black tracking-widest text-indigo-400">Instagram Account ID (Numeric)</label>
-                            <input type="text" id="field-pageid" class="w-full p-5 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 text-white font-mono text-sm transition-all border border-slate-800" placeholder="Paste your numeric ID here">
+                            <input type="text" id="field-pageid" class="w-full p-5 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 text-white font-mono text-sm transition-all border border-slate-800" placeholder="e.g. 1784... or 6158...">
                             <p class="text-[10px] text-slate-600 italic leading-relaxed">If the app isn't loading your name, paste your <b>numeric Instagram ID</b> here instead of your Facebook Page ID.</p>
                         </div>
                         <button onclick="saveMetaSettings()" id="settings-save-btn" class="bg-indigo-600 w-full py-5 rounded-2xl font-black text-white shadow-xl shadow-indigo-600/30 hover:bg-indigo-500 active:scale-[0.98] transition-all">
@@ -225,9 +225,13 @@
                     </div>
                 </div>
 
-                <div id="debug-box" class="hidden glass p-6 rounded-3xl border border-rose-500/30 max-w-2xl bg-rose-500/5">
-                    <h4 class="text-rose-400 font-bold text-sm mb-2 flex items-center gap-2"><i data-lucide="bug" class="w-4 h-4"></i> Meta API Debugger</h4>
-                    <p id="debug-text" class="text-xs text-rose-300/80 font-mono whitespace-pre-wrap"></p>
+                <div id="debug-box" class="hidden glass p-8 rounded-[2rem] border border-rose-500/30 max-w-2xl bg-rose-500/5">
+                    <h4 class="text-rose-400 font-bold text-sm mb-3 flex items-center gap-2"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Token Compatibility Error</h4>
+                    <p id="debug-text" class="text-xs text-rose-300/80 font-mono leading-relaxed mb-4"></p>
+                    <div class="p-4 bg-slate-900 rounded-xl border border-slate-800">
+                        <p class="text-xs text-slate-400 font-bold mb-1 uppercase">How to fix this:</p>
+                        <p class="text-[11px] text-slate-300">Your token (IGAAT...) is for <b>Instagram Basic Display</b>. For DM automation, you need an <b>Instagram Graph API</b> token (starts with <b>EAAB...</b>). Go to Meta Graph API Explorer and select your Facebook Page to generate the correct one.</p>
+                    </div>
                 </div>
             </div>
 
@@ -296,42 +300,41 @@
 
             try {
                 let igId = id;
+                let baseUrl = 'https://graph.facebook.com/v19.0';
                 
-                // --- SMART RECOVERY LOGIC ---
-                // If it looks like an Instagram Basic Display Token (IGAAT)
+                // Detection for Instagram Basic Tokens
                 if (token.startsWith('IGAAT')) {
-                    // This is for Basic Display API (Legacy/restricted)
-                    const meRes = await fetch(`https://graph.instagram.com/me?fields=id,username,profile_picture_url&access_token=${token}`);
+                    baseUrl = 'https://graph.instagram.com';
+                    const meRes = await fetch(`${baseUrl}/me?fields=id,username,profile_picture_url&access_token=${token}`);
                     const meData = await meRes.json();
                     
+                    if (meData.error) {
+                        document.getElementById('debug-box').classList.remove('hidden');
+                        document.getElementById('debug-text').innerText = `Meta Error: ${meData.error.message}`;
+                        throw new Error(meData.error.message);
+                    }
+                    
                     if (meData.id) {
-                        igId = meData.id;
                         updateProfileUI(meData);
-                        // Media fetch for basic api
-                        const mediaRes = await fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&access_token=${token}`);
+                        const mediaRes = await fetch(`${baseUrl}/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&access_token=${token}`);
                         const mediaData = await mediaRes.json();
                         if (mediaData.data) renderMediaGrid(mediaData.data);
                         return;
                     }
                 }
 
-                // Standard Graph API Logic
+                // Standard Logic for Business Tokens (EAAB...)
                 if (!igId || !igId.startsWith('1784')) {
-                    const pageRes = await fetch(`https://graph.facebook.com/v19.0/${id}?fields=instagram_business_account&access_token=${token}`);
+                    const pageRes = await fetch(`${baseUrl}/${id}?fields=instagram_business_account&access_token=${token}`);
                     const pageData = await pageRes.json();
-                    if (pageData.error) {
-                        document.getElementById('debug-box').classList.remove('hidden');
-                        document.getElementById('debug-text').innerText = JSON.stringify(pageData.error, null, 2);
-                        throw new Error(pageData.error.message);
-                    }
                     if (pageData.instagram_business_account) igId = pageData.instagram_business_account.id;
                 }
 
-                const profileRes = await fetch(`https://graph.facebook.com/v19.0/${igId}?fields=username,name,profile_picture_url&access_token=${token}`);
+                const profileRes = await fetch(`${baseUrl}/${igId}?fields=username,name,profile_picture_url&access_token=${token}`);
                 const profileData = await profileRes.json();
                 if (profileData.username) updateProfileUI(profileData);
 
-                const mediaRes = await fetch(`https://graph.facebook.com/v19.0/${igId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=20&access_token=${token}`);
+                const mediaRes = await fetch(`${baseUrl}/${igId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=20&access_token=${token}`);
                 const mediaData = await mediaRes.json();
                 if (mediaData.data) renderMediaGrid(mediaData.data);
 
@@ -389,16 +392,16 @@
                         <div class="glass p-8 rounded-[2.5rem] border-l-8 border-indigo-600 shadow-2xl">
                             <div class="flex justify-between items-start mb-4">
                                 <span class="text-[10px] font-black bg-indigo-500/20 text-indigo-400 px-4 py-2 rounded-xl border border-indigo-500/10 uppercase italic tracking-widest">${r.keyword}</span>
-                                <button onclick="window.removeRule('${dSnap.id}')" class="text-slate-600 hover:text-rose-500 p-2 transition-all"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                                <button onclick="window.removeRule('${dSnap.id}')" class="text-slate-600 hover:text-rose-500 p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
                             </div>
-                            <p class="text-sm text-slate-300 line-clamp-4 italic">"${r.message}"</p>
+                            <p class="text-sm text-slate-300 line-clamp-4 leading-relaxed italic">"${r.message}"</p>
                         </div>
                     `;
                 });
                 lucide.createIcons();
             });
 
-            // Logs - FIXED: Changed 'snapshot' to 'snap' internally to match parameter
+            // Logs
             onSnapshot(collection(window.db, "artifacts", window.appId, "users", uid, "logs"), (snap) => {
                 const body = document.getElementById('logs-table-body');
                 body.innerHTML = '';
