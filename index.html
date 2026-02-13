@@ -6,11 +6,41 @@
     <title>LinkMyDM | Personal Automation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAAjGeIKVPar8LF3OsSGu4OKRBFql_fLg8",
+            authDomain: "linkmydm.firebaseapp.com",
+            projectId: "linkmydm",
+            storageBucket: "linkmydm.firebasestorage.app",
+            messagingSenderId: "1038933815704",
+            appId: "1:1038933815704:web:3f6c9536b58d1fee73fbed",
+            measurementId: "G-SMXMMRZ6H6"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const appId = "linkmydm-personal";
+
+        window.db = db;
+        window.auth = auth;
+        window.appId = appId;
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
         .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(30, 41, 59, 0.5); }
         .active-tab { background: rgba(79, 70, 229, 0.1); color: #818cf8; border: 1px solid rgba(79, 70, 229, 0.2); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        input, textarea { background: #0f172a !important; border: 1px solid #1e293b !important; color: white !important; }
     </style>
 </head>
 <body class="h-screen overflow-hidden flex">
@@ -25,25 +55,27 @@
         </div>
         
         <nav class="space-y-2 flex-1">
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl active-tab">
+            <button onclick="showTab('dashboard')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl active-tab" data-tab="dashboard">
                 <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all">
+            </button>
+            <button onclick="showTab('automations')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="automations">
                 <i data-lucide="zap" class="w-5 h-5"></i> Automations
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all">
+            </button>
+            <button onclick="showTab('logs')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="logs">
                 <i data-lucide="history" class="w-5 h-5"></i> Logs
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all">
+            </button>
+            <button onclick="showTab('settings')" class="nav-link w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="settings">
                 <i data-lucide="settings" class="w-5 h-5"></i> Settings
-            </a>
+            </button>
         </nav>
 
         <div class="mt-auto p-4 glass rounded-2xl flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-bold">PH</div>
+            <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-bold" id="userInitials">PH</div>
             <div class="overflow-hidden">
-                <p class="text-xs font-bold truncate">@pedduhudga_</p>
-                <p class="text-[10px] text-emerald-400">Live & Connected</p>
+                <p class="text-xs font-bold truncate" id="userName">@pedduhudga_</p>
+                <p class="text-[10px] text-emerald-400 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Live
+                </p>
             </div>
         </div>
     </aside>
@@ -51,7 +83,7 @@
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto">
         <header class="h-16 border-b border-slate-900 px-8 flex items-center justify-between sticky top-0 glass z-50">
-            <h1 class="text-lg font-semibold">Dashboard Overview</h1>
+            <h1 class="text-lg font-semibold" id="pageTitle">Dashboard Overview</h1>
             <div class="flex items-center gap-4">
                 <div class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold flex items-center gap-2">
                     <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
@@ -61,85 +93,243 @@
         </header>
 
         <div class="p-8 max-w-6xl mx-auto space-y-8">
-            <!-- Stats -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="glass p-6 rounded-2xl">
-                    <p class="text-slate-500 text-sm">Comments Scanned</p>
-                    <p class="text-3xl font-bold mt-1">1,284</p>
+            
+            <!-- Dashboard Tab -->
+            <div id="tab-dashboard" class="tab-content active space-y-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass p-6 rounded-2xl">
+                        <p class="text-slate-500 text-sm">Comments Scanned</p>
+                        <p class="text-3xl font-bold mt-1" id="stat-total">0</p>
+                    </div>
+                    <div class="glass p-6 rounded-2xl">
+                        <p class="text-slate-500 text-sm">DMs Delivered</p>
+                        <p class="text-3xl font-bold mt-1 text-emerald-400" id="stat-sent">0</p>
+                    </div>
+                    <div class="glass p-6 rounded-2xl">
+                        <p class="text-slate-500 text-sm">Failures</p>
+                        <p class="text-3xl font-bold mt-1 text-rose-400" id="stat-failed">0</p>
+                    </div>
+                    <div class="glass p-6 rounded-2xl">
+                        <p class="text-slate-500 text-sm">Time Saved</p>
+                        <p class="text-3xl font-bold mt-1 text-indigo-400" id="stat-saved">0 hr</p>
+                    </div>
                 </div>
-                <div class="glass p-6 rounded-2xl">
-                    <p class="text-slate-500 text-sm">DMs Delivered</p>
-                    <p class="text-3xl font-bold mt-1 text-emerald-400">842</p>
-                </div>
-                <div class="glass p-6 rounded-2xl">
-                    <p class="text-slate-500 text-sm">Failures</p>
-                    <p class="text-3xl font-bold mt-1 text-rose-400">3</p>
-                </div>
-                <div class="glass p-6 rounded-2xl">
-                    <p class="text-slate-500 text-sm">Time Saved</p>
-                    <p class="text-3xl font-bold mt-1 text-indigo-400">14.2 hr</p>
+
+                <div class="bg-indigo-600 rounded-3xl p-8 relative overflow-hidden group">
+                    <div class="relative z-10">
+                        <h2 class="text-3xl font-bold mb-2">Ready to automate?</h2>
+                        <p class="text-indigo-100 max-w-md mb-6">Create your first keyword rule to start replying to your followers automatically.</p>
+                        <button onclick="openModal()" class="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform">
+                            + Create Automation Rule
+                        </button>
+                    </div>
+                    <i data-lucide="zap" class="absolute -right-10 -bottom-10 w-64 h-64 text-white/10 rotate-12 group-hover:rotate-0 transition-all duration-700"></i>
                 </div>
             </div>
 
-            <!-- Welcome Card -->
-            <div class="bg-indigo-600 rounded-3xl p-8 relative overflow-hidden group">
-                <div class="relative z-10">
-                    <h2 class="text-3xl font-bold mb-2">Ready to automate?</h2>
-                    <p class="text-indigo-100 max-w-md mb-6">Create your first keyword rule to start replying to your followers automatically.</p>
-                    <button class="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform">
-                        + Create Automation Rule
+            <!-- Automations Tab -->
+            <div id="tab-automations" class="tab-content space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold">Your Rules</h2>
+                    <button onclick="openModal()" class="bg-indigo-600 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Add Rule
                     </button>
                 </div>
-                <i data-lucide="zap" class="absolute -right-10 -bottom-10 w-64 h-64 text-white/10 rotate-12 group-hover:rotate-0 transition-all duration-700"></i>
+                <div id="rules-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Rules loaded here -->
+                </div>
             </div>
 
-            <!-- Logs Table -->
-            <div class="glass rounded-2xl overflow-hidden">
-                <div class="p-6 border-b border-slate-900 flex justify-between items-center">
-                    <h3 class="font-bold">Recent Activity</h3>
-                    <button class="text-xs text-indigo-400 hover:underline">View all history</button>
-                </div>
-                <div class="overflow-x-auto">
+            <!-- Logs Tab -->
+            <div id="tab-logs" class="tab-content space-y-4">
+                <div class="glass rounded-2xl overflow-hidden">
+                    <div class="p-6 border-b border-slate-900"><h3 class="font-bold">Execution Logs</h3></div>
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-950 text-slate-500">
                             <tr>
-                                <th class="px-6 py-4 font-medium uppercase text-[10px]">User</th>
-                                <th class="px-6 py-4 font-medium uppercase text-[10px]">Comment</th>
-                                <th class="px-6 py-4 font-medium uppercase text-[10px]">Status</th>
+                                <th class="px-6 py-4">Time</th>
+                                <th class="px-6 py-4">User</th>
+                                <th class="px-6 py-4">Comment</th>
+                                <th class="px-6 py-4">Status</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-900">
-                            <tr>
-                                <td class="px-6 py-4 font-bold">@sarah_tech</td>
-                                <td class="px-6 py-4 text-slate-400 italic">"Send me the link please!"</td>
-                                <td class="px-6 py-4"><span class="px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">SENT</span></td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 font-bold">@pavan_rs</td>
-                                <td class="px-6 py-4 text-slate-400 italic">"Interesting formula..."</td>
-                                <td class="px-6 py-4"><span class="px-2 py-1 rounded-full bg-slate-800 text-slate-500 text-[10px] font-bold">IGNORED</span></td>
-                            </tr>
+                        <tbody id="logs-body" class="divide-y divide-slate-900">
+                            <!-- Logs loaded here -->
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            <!-- Settings Tab -->
+            <div id="tab-settings" class="tab-content space-y-6">
+                <div class="glass p-8 rounded-2xl space-y-6 max-w-2xl">
+                    <h3 class="text-xl font-bold">Meta Configuration</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs text-slate-500 uppercase font-bold">Instagram Access Token</label>
+                            <input type="password" id="setting-token" class="w-full mt-1 p-3 rounded-xl" placeholder="Paste your permanent token here">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-500 uppercase font-bold">Instagram Page ID</label>
+                            <input type="text" id="setting-pageid" class="w-full mt-1 p-3 rounded-xl" placeholder="e.g. 17841401...">
+                        </div>
+                        <button onclick="saveSettings()" class="bg-indigo-600 w-full py-3 rounded-xl font-bold">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
-    <script>
+    <!-- Modal for New Rule -->
+    <div id="rule-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="glass w-full max-w-lg rounded-3xl p-8 space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-2xl font-bold">New Automation</h3>
+                <button onclick="closeModal()"><i data-lucide="x" class="text-slate-500"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-500 font-bold uppercase">Trigger Keyword</label>
+                    <input type="text" id="rule-keyword" class="w-full mt-1 p-3 rounded-xl" placeholder="e.g. LINK">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500 font-bold uppercase">DM Reply Message</label>
+                    <textarea id="rule-message" rows="3" class="w-full mt-1 p-3 rounded-xl" placeholder="Hey! Thanks for your comment..."></textarea>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-500 font-bold uppercase">Destination URL</label>
+                    <input type="text" id="rule-url" class="w-full mt-1 p-3 rounded-xl" placeholder="https://...">
+                </div>
+                <button onclick="saveRule()" id="save-rule-btn" class="w-full bg-indigo-600 py-4 rounded-2xl font-bold shadow-lg shadow-indigo-600/20">
+                    Activate Rule
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { collection, addDoc, onSnapshot, query, doc, updateDoc, deleteDoc, serverTimestamp, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        let currentUserId = null;
+
         // Initialize Icons
         lucide.createIcons();
 
-        // Simple Tab Switching Logic (Mockup)
-        document.querySelectorAll('nav a').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                document.querySelectorAll('nav a').forEach(l => l.classList.remove('active-tab', 'text-white'));
-                document.querySelectorAll('nav a').forEach(l => l.classList.add('text-slate-400'));
-                link.classList.add('active-tab', 'text-white');
-                link.classList.remove('text-slate-400');
-            });
+        // Auth Logic
+        onAuthStateChanged(window.auth, (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                document.getElementById('userInitials').innerText = user.uid.substring(0,2).toUpperCase();
+                document.getElementById('userName').innerText = `@user_${user.uid.substring(0,5)}`;
+                startListeners();
+            } else {
+                signInAnonymously(window.auth);
+            }
         });
+
+        function startListeners() {
+            if (!currentUserId) return;
+
+            // Listen for Rules
+            const qRules = collection(window.db, "artifacts", window.appId, "users", currentUserId, "automations");
+            onSnapshot(qRules, (snap) => {
+                const list = document.getElementById('rules-list');
+                list.innerHTML = '';
+                snap.forEach(doc => {
+                    const rule = doc.data();
+                    list.innerHTML += `
+                        <div class="glass p-5 rounded-2xl border-l-4 ${rule.is_active ? 'border-indigo-500' : 'border-slate-700 opacity-60'}">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[10px] font-bold bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded">MATCH: ${rule.keyword}</span>
+                                <button onclick="deleteRule('${doc.id}')" class="text-rose-500 hover:bg-rose-500/10 p-1 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                            <p class="text-sm text-slate-300 line-clamp-2">"${rule.message}"</p>
+                        </div>
+                    `;
+                });
+                lucide.createIcons();
+            });
+
+            // Listen for Logs
+            const qLogs = collection(window.db, "artifacts", window.appId, "users", currentUserId, "logs");
+            onSnapshot(qLogs, (snap) => {
+                const body = document.getElementById('logs-body');
+                body.innerHTML = '';
+                let sentCount = 0;
+                let failCount = 0;
+                snap.forEach(doc => {
+                    const log = doc.data();
+                    if(log.status === 'sent') sentCount++;
+                    if(log.status === 'failed') failCount++;
+                    body.innerHTML += `
+                        <tr>
+                            <td class="px-6 py-4 text-slate-500 text-xs">Now</td>
+                            <td class="px-6 py-4 font-bold">@${log.user}</td>
+                            <td class="px-6 py-4 text-slate-400 italic">"${log.comment}"</td>
+                            <td class="px-6 py-4"><span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">${log.status.toUpperCase()}</span></td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('stat-total').innerText = snap.size;
+                document.getElementById('stat-sent').innerText = sentCount;
+                document.getElementById('stat-failed').innerText = failCount;
+                document.getElementById('stat-saved').innerText = `${(sentCount * 0.02).toFixed(1)} hr`;
+            });
+        }
+
+        // Global functions for buttons
+        window.saveRule = async () => {
+            const btn = document.getElementById('save-rule-btn');
+            btn.innerText = 'Saving...';
+            await addDoc(collection(window.db, "artifacts", window.appId, "users", currentUserId, "automations"), {
+                keyword: document.getElementById('rule-keyword').value.toUpperCase(),
+                message: document.getElementById('rule-message').value,
+                link: document.getElementById('rule-url').value,
+                is_active: true,
+                created_at: serverTimestamp()
+            });
+            btn.innerText = 'Activate Rule';
+            closeModal();
+            document.getElementById('rule-keyword').value = '';
+            document.getElementById('rule-message').value = '';
+            document.getElementById('rule-url').value = '';
+        };
+
+        window.deleteRule = async (id) => {
+            if(confirm('Are you sure you want to delete this rule?')) {
+                await deleteDoc(doc(window.db, "artifacts", window.appId, "users", currentUserId, "automations", id));
+            }
+        };
+
+        window.saveSettings = async () => {
+            await setDoc(doc(window.db, "artifacts", window.appId, "users", currentUserId, "settings", "main"), {
+                instagram_access_token: document.getElementById('setting-token').value,
+                instagram_page_id: document.getElementById('setting-pageid').value,
+                is_active: true
+            });
+            alert('Settings saved successfully!');
+        };
+    </script>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-tab', 'text-indigo-400'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.add('text-slate-400'));
+            
+            const activeLink = document.querySelector(`[data-tab="${tabId}"]`);
+            activeLink.classList.add('active-tab');
+            activeLink.classList.remove('text-slate-400');
+            
+            document.getElementById('pageTitle').innerText = tabId.charAt(0).toUpperCase() + tabId.slice(1) + ' Overview';
+        }
+
+        function openModal() { document.getElementById('rule-modal').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('rule-modal').classList.add('hidden'); }
     </script>
 </body>
 </html>
