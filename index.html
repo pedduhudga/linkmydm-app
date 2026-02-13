@@ -86,7 +86,6 @@
             </button>
         </nav>
 
-        <!-- Profile Section -->
         <div class="mt-auto p-4 glass rounded-2xl flex items-center gap-3 border-indigo-500/20">
             <div id="sidebar-img-container" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-700 shadow-inner">
                 <i data-lucide="user" class="w-5 h-5 text-slate-500" id="sidebar-icon"></i>
@@ -141,14 +140,14 @@
 
                 <div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 rounded-[2.5rem] p-12 relative overflow-hidden shadow-2xl group">
                     <div class="relative z-10 max-w-lg">
-                        <h2 class="text-4xl font-black mb-4 text-white leading-tight">Advanced Automation</h2>
-                        <p class="text-indigo-100 text-lg mb-8 opacity-90">LinkMyDM is active. You can now set account-wide keywords or target specific Reels with unique responses.</p>
+                        <h2 class="text-4xl font-black mb-4 text-white leading-tight">Post-Level Targeting</h2>
+                        <p class="text-indigo-100 text-lg mb-8 opacity-90">LinkMyDM is ready. Create generic rules for your whole account, or tap a post in the Library to target it individually.</p>
                         <div class="flex gap-4">
-                            <button onclick="openRuleModal()" class="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all shadow-xl active:scale-95">
+                            <button onclick="openRuleModal()" class="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-bold hover:scale-105 shadow-xl active:scale-95 transition-all">
                                 + Add Global Rule
                             </button>
                             <button onclick="changeTab('media')" class="bg-indigo-500/20 text-white border border-indigo-400/30 px-8 py-4 rounded-2xl font-bold hover:bg-indigo-500/30 transition-all">
-                                Target a Reel
+                                Content Library
                             </button>
                         </div>
                     </div>
@@ -156,11 +155,11 @@
                 </div>
             </div>
 
-            <!-- Tab: Media Feed -->
+            <!-- Tab: Content Library -->
             <div id="view-media" class="tab-content space-y-8">
                 <div>
                     <h2 class="text-3xl font-black text-white">Content Library</h2>
-                    <p class="text-slate-400 text-sm mt-1">Select any post below to create a custom automation rule for it.</p>
+                    <p class="text-slate-400 text-sm mt-1">Select a specific Reel or Post to create a unique automation for it.</p>
                 </div>
                 <div id="media-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <div class="shimmer h-80 rounded-[2rem]"></div>
@@ -170,12 +169,12 @@
                 </div>
             </div>
 
-            <!-- Tab: Automations -->
+            <!-- Tab: Active Automations -->
             <div id="view-automations" class="tab-content space-y-6">
                 <div class="flex justify-between items-end">
                     <div>
                         <h2 class="text-3xl font-black text-white">Active Rules</h2>
-                        <p class="text-slate-500 text-sm mt-1">Manage your keyword triggers and per-post automations.</p>
+                        <p class="text-slate-500 text-sm mt-1">Rules with specific thumbnails only run on those posts.</p>
                     </div>
                     <button onclick="openRuleModal()" class="bg-indigo-600 px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-600/20">
                         <i data-lucide="plus" class="w-5 h-5"></i> New Rule
@@ -186,7 +185,7 @@
 
             <!-- Tab: Logs -->
             <div id="view-logs" class="tab-content space-y-4">
-                <div class="glass rounded-3xl overflow-hidden shadow-2xl border-slate-800">
+                <div class="glass rounded-3xl overflow-hidden shadow-2xl">
                     <div class="p-6 border-b border-slate-900 bg-slate-900/30 flex justify-between items-center">
                         <h3 class="font-bold text-white tracking-tight text-lg">Activity History</h3>
                         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-black tracking-widest">LIVE</span>
@@ -197,7 +196,7 @@
                                 <tr>
                                     <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">Time</th>
                                     <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">User</th>
-                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">Comment</th>
+                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">Comment Captured</th>
                                     <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">Status</th>
                                 </tr>
                             </thead>
@@ -216,7 +215,7 @@
                         </div>
                         <div>
                             <h3 class="text-2xl font-black text-white tracking-tight">Sync Meta Connection</h3>
-                            <p class="text-slate-500 text-sm">Connect your professional Instagram account ID and Token.</p>
+                            <p class="text-slate-500 text-sm">Connect your numeric Instagram account ID and Access Token.</p>
                         </div>
                     </div>
                     <div class="space-y-6">
@@ -260,7 +259,8 @@
             <div class="space-y-6">
                 <div>
                     <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Trigger Keywords (Comma separated)</label>
-                    <input type="text" id="input-keyword" class="w-full p-5 rounded-2xl font-mono text-indigo-400 text-lg uppercase outline-none focus:ring-2 focus:ring-indigo-500 border-none bg-slate-900" placeholder="e.g. LINK, INFO, PRICE">
+                    <input type="text" id="input-keyword" class="w-full p-5 rounded-2xl font-mono text-indigo-400 text-lg uppercase outline-none focus:ring-2 focus:ring-indigo-500 border-none bg-slate-900" placeholder="e.g. LINK, PRICE, INFO">
+                    <p class="text-[9px] text-slate-600 mt-2">The bot will trigger if any of these words are found.</p>
                 </div>
                 <div>
                     <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Automated DM Response</label>
@@ -302,15 +302,29 @@
 
         async function fetchInstagramDetails(token, id) {
             if (!token) return;
-            document.getElementById('status-text').innerText = "Meta Connection...";
+            document.getElementById('status-text').innerText = "Connecting...";
             document.getElementById('status-dot').className = 'w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse';
 
             try {
                 let igId = id;
                 let baseUrl = 'https://graph.facebook.com/v19.0';
                 
-                if (token.startsWith('IGAAT')) baseUrl = 'https://graph.instagram.com';
+                // FORCE /me protocol for IGAAT tokens to bypass Page ID lookup errors (400)
+                if (token.startsWith('IGAAT')) {
+                    baseUrl = 'https://graph.instagram.com';
+                    const meRes = await fetch(`${baseUrl}/me?fields=id,username,profile_picture_url&access_token=${token}`);
+                    const meData = await meRes.json();
+                    if (meData.id) {
+                        igId = meData.id;
+                        updateProfileUI(meData);
+                        const mediaRes = await fetch(`${baseUrl}/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&access_token=${token}`);
+                        const mediaData = await mediaRes.json();
+                        if (mediaData.data) renderMediaGrid(mediaData.data);
+                        return;
+                    }
+                }
 
+                // Standard Flow for EAAB tokens
                 if (!igId || !igId.startsWith('1784')) {
                     const pageRes = await fetch(`${baseUrl}/${id}?fields=instagram_business_account&access_token=${token}`);
                     const pageData = await pageRes.json();
@@ -326,8 +340,8 @@
                 if (mediaData.data) renderMediaGrid(mediaData.data);
 
             } catch (err) {
-                console.error("Meta Sync Error:", err);
-                document.getElementById('status-text').innerText = "Sync Error";
+                console.error("Meta API Linkage Error:", err);
+                document.getElementById('status-text').innerText = "Meta Connection Error";
                 document.getElementById('status-dot').className = 'w-1.5 h-1.5 bg-rose-500 rounded-full';
             }
         }
@@ -381,13 +395,13 @@
                                     <span class="text-[9px] font-black bg-white/5 text-slate-400 px-3 py-1 rounded-lg border border-white/5 uppercase tracking-widest">${isSpecific ? 'Per-Post Rule' : 'Global Rule'}</span>
                                     <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest mt-1">${r.keyword}</span>
                                 </div>
-                                <button onclick="window.removeRule('${dSnap.id}')" class="text-slate-600 hover:text-rose-500 p-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                <button onclick="window.removeRule('${dSnap.id}')" class="text-slate-600 hover:text-rose-500 p-2 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                             </div>
                             
                             ${isSpecific ? `
                                 <div class="flex items-center gap-3 p-3 bg-black/30 rounded-xl border border-white/5">
                                     <img src="${r.media_thumb}" class="w-10 h-10 rounded-lg object-cover">
-                                    <p class="text-[10px] text-slate-500 line-clamp-1 italic">Attached to ID: ${r.media_id}</p>
+                                    <p class="text-[10px] text-slate-500 line-clamp-1 italic">Post Targeting Active</p>
                                 </div>
                             ` : ''}
 
@@ -413,7 +427,7 @@
                             <td class="px-8 py-6 text-slate-500 font-mono">${time}</td>
                             <td class="px-8 py-6 font-black text-white">@${log.user}</td>
                             <td class="px-8 py-6 text-slate-400 italic">"${log.comment}"</td>
-                            <td class="px-8 py-6"><span class="px-4 py-1.5 rounded-full ${log.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} font-black uppercase text-[8px] tracking-widest">${log.status}</span></td>
+                            <td class="px-8 py-6"><span class="px-4 py-1.5 rounded-full ${log.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} font-black uppercase text-[8px] tracking-widest border">${log.status}</span></td>
                         </tr>
                     `;
                 });
@@ -457,7 +471,7 @@
         };
 
         window.removeRule = async (id) => {
-            if(confirm('Delete automation?')) {
+            if(confirm('Stop trigger?')) {
                 await window.fb.deleteDoc(window.fb.doc(window.db, "artifacts", window.appId, "users", window.auth.currentUser.uid, "automations", id));
             }
         };
@@ -467,7 +481,7 @@
             const pageId = document.getElementById('field-pageid').value.trim();
             if (!token) return notify("Missing Token.");
             const btn = document.getElementById('settings-save-btn');
-            btn.innerText = 'Connecting...';
+            btn.innerText = 'Syncing...';
             try {
                 await window.fb.setDoc(window.fb.doc(window.db, "artifacts", window.appId, "users", window.auth.currentUser.uid, "settings", "main"), {
                     instagram_access_token: token, instagram_page_id: pageId, is_active: true, last_updated: window.fb.serverTimestamp()
