@@ -50,6 +50,7 @@
 
     <div id="toast-container" class="fixed bottom-6 right-6 z-[200] space-y-2"></div>
 
+    <!-- Sidebar -->
     <aside class="w-64 border-r border-slate-900 flex flex-col p-6 hidden md:flex">
         <div class="flex items-center gap-3 mb-10">
             <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -85,13 +86,14 @@
         </div>
     </aside>
 
+    <!-- Main View -->
     <main class="flex-1 overflow-y-auto relative">
         <header class="h-16 border-b border-slate-900 px-8 flex items-center justify-between sticky top-0 glass z-50">
             <h1 class="text-lg font-semibold text-white" id="headerTitle">Dashboard</h1>
             <div class="flex items-center gap-4">
                 <div id="live-badge" class="px-3 py-1 rounded-full bg-slate-800 text-slate-500 border border-slate-700 text-[10px] font-bold flex items-center gap-2">
                     <div id="badge-dot" class="w-2 h-2 bg-slate-600 rounded-full"></div>
-                    <span id="badge-text">CONNECTING TO CLOUD</span>
+                    <span id="badge-text">WAITING FOR AUTH</span>
                 </div>
             </div>
         </header>
@@ -121,8 +123,8 @@
                 <div class="bg-indigo-600 rounded-[2rem] p-10 relative overflow-hidden shadow-xl">
                     <div class="relative z-10">
                         <h2 class="text-3xl font-bold mb-3 text-white">Scale your Engagement</h2>
-                        <p class="text-indigo-100 max-w-md mb-8">Your bot sends herbicide formulas instantly when someone comments.</p>
-                        <button onclick="openRuleModal()" class="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all shadow-xl active:scale-95">
+                        <p class="text-indigo-100 max-w-md mb-8">Your bot is active. It will reply to comments using the keywords you define.</p>
+                        <button onclick="openRuleModal()" class="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-bold hover:scale-105 active:scale-95">
                             + Add New Trigger Rule
                         </button>
                     </div>
@@ -132,10 +134,7 @@
 
             <div id="view-automations" class="tab-content space-y-6">
                 <div class="flex justify-between items-end">
-                    <div>
-                        <h2 class="text-2xl font-bold text-white">Automation Rules</h2>
-                        <p class="text-slate-500 text-sm">When keywords appear, the DM will fire.</p>
-                    </div>
+                    <h2 class="text-2xl font-bold text-white">Trigger Rules</h2>
                     <button onclick="openRuleModal()" class="bg-indigo-600 px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 text-white">
                         <i data-lucide="plus" class="w-4 h-4"></i> New Rule
                     </button>
@@ -145,9 +144,8 @@
 
             <div id="view-logs" class="tab-content space-y-4">
                 <div class="glass rounded-3xl overflow-hidden">
-                    <div class="p-6 border-b border-slate-900 bg-slate-900/30 flex justify-between items-center">
+                    <div class="p-6 border-b border-slate-900 bg-slate-900/30">
                         <h3 class="font-bold text-white">Real-time History</h3>
-                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20 font-bold">LIVE STREAMING</span>
                     </div>
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-950/50 text-slate-500">
@@ -164,7 +162,22 @@
             </div>
 
             <div id="view-settings" class="tab-content space-y-8">
-                <div class="glass p-10 rounded-[2.5rem] space-y-8 max-w-2xl border-indigo-500/10">
+                <!-- IMPORTANT: SYSTEM ID SECTION -->
+                <div class="bg-indigo-600/10 border border-indigo-500/30 p-8 rounded-[2rem] space-y-4 max-w-2xl shadow-xl">
+                    <div class="flex items-center gap-3 text-indigo-400">
+                        <i data-lucide="fingerprint" class="w-6 h-6"></i>
+                        <h3 class="font-bold">Your Full System ID (For Vercel)</h3>
+                    </div>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Copy the <b>Full ID</b> below and paste it into Vercel Settings as <code class="text-indigo-300">FIREBASE_USER_ID</code>.
+                    </p>
+                    <div class="flex gap-2">
+                        <input type="text" id="full-user-id-field" readonly class="flex-1 p-4 rounded-xl font-mono text-xs text-indigo-300 border border-indigo-500/20 bg-indigo-950/30" value="Loading...">
+                        <button onclick="copyFullId()" class="bg-indigo-600 px-6 rounded-xl font-bold text-xs hover:bg-indigo-500 transition-all">Copy</button>
+                    </div>
+                </div>
+
+                <div class="glass p-10 rounded-[2.5rem] space-y-8 max-w-2xl border-indigo-500/10 shadow-2xl">
                     <div class="flex items-center gap-4">
                         <div class="p-3 bg-indigo-600/20 rounded-2xl text-indigo-400"><i data-lucide="key" class="w-7 h-7"></i></div>
                         <div>
@@ -181,31 +194,9 @@
                             <label class="text-xs text-slate-500 uppercase font-bold tracking-widest">Instagram Page ID</label>
                             <input type="text" id="field-pageid" class="w-full p-4 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 text-white" placeholder="e.g. 17841401...">
                         </div>
-                        <button onclick="saveMetaSettings()" id="settings-save-btn" class="bg-indigo-600 w-full py-5 rounded-2xl font-bold text-white shadow-lg active:scale-95">
-                            Save Configuration
+                        <button onclick="saveMetaSettings()" id="settings-save-btn" class="bg-indigo-600 w-full py-5 rounded-2xl font-bold text-white shadow-lg active:scale-95 transition-all">
+                            Save and Sync with Cloud
                         </button>
-                    </div>
-                </div>
-
-                <!-- NEW WEBHOOK HELPER SECTION -->
-                <div class="bg-slate-900 border border-indigo-500/30 p-10 rounded-[2.5rem] space-y-6 max-w-2xl shadow-2xl">
-                    <div class="flex items-center gap-4">
-                        <div class="p-3 bg-indigo-600 text-white rounded-2xl"><i data-lucide="webhook" class="w-7 h-7"></i></div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white">Webhook Connection Guide</h3>
-                            <p class="text-indigo-400 text-xs font-bold">Copy these into your Meta Portal</p>
-                        </div>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="p-4 bg-black/50 rounded-2xl border border-slate-800">
-                            <p class="text-xs text-slate-500 uppercase font-bold mb-1">Callback URL</p>
-                            <code id="display-url" class="text-indigo-400 text-sm break-all font-mono">https://linkmydm-app.vercel.app/api/webhooks/instagram</code>
-                        </div>
-                        <div class="p-4 bg-black/50 rounded-2xl border border-slate-800">
-                            <p class="text-xs text-slate-500 uppercase font-bold mb-1">Verify Token</p>
-                            <code class="text-indigo-400 text-sm font-mono">PedduAutodm123</code>
-                        </div>
-                        <p class="text-[11px] text-slate-400 italic">Note: Make sure you created the file <b>api/webhooks/instagram.js</b> in your GitHub as instructed!</p>
                     </div>
                 </div>
             </div>
@@ -213,28 +204,23 @@
         </div>
     </main>
 
+    <!-- Modal -->
     <div id="modal-rule" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4">
         <div class="glass w-full max-w-xl rounded-[3rem] p-10 space-y-8 shadow-2xl border-indigo-500/20">
-            <div class="flex justify-between items-center">
-                <h3 class="text-2xl font-bold text-white">Create Trigger</h3>
-                <button onclick="closeRuleModal()" class="p-2 text-slate-500 hover:text-white"><i data-lucide="x"></i></button>
+            <div class="flex justify-between items-center text-white">
+                <h3 class="text-2xl font-bold">New Trigger Rule</h3>
+                <button onclick="closeRuleModal()"><i data-lucide="x"></i></button>
             </div>
             <div class="space-y-5">
-                <div class="space-y-2">
-                    <label class="text-xs text-slate-500 font-bold uppercase tracking-widest">Trigger Keyword</label>
-                    <input type="text" id="input-keyword" class="w-full p-4 rounded-2xl font-mono text-indigo-400 text-white" placeholder="e.g. GOWEED">
+                <div>
+                    <label class="text-xs text-slate-500 font-bold uppercase tracking-widest">Keyword</label>
+                    <input type="text" id="input-keyword" class="w-full p-4 rounded-2xl font-mono text-indigo-400 text-white uppercase">
                 </div>
-                <div class="space-y-2">
-                    <label class="text-xs text-slate-500 font-bold uppercase tracking-widest">DM Response Message</label>
-                    <textarea id="input-message" rows="5" class="w-full p-4 rounded-2xl resize-none text-white" placeholder="Hey! Here is the formula..."></textarea>
+                <div>
+                    <label class="text-xs text-slate-500 font-bold uppercase tracking-widest">DM Response</label>
+                    <textarea id="input-message" rows="5" class="w-full p-4 rounded-2xl text-white"></textarea>
                 </div>
-                <div class="space-y-2">
-                    <label class="text-xs text-slate-500 font-bold uppercase tracking-widest">Destination Link (Optional)</label>
-                    <input type="text" id="input-url" class="w-full p-4 rounded-2xl text-white" placeholder="https://yourwebsite.com">
-                </div>
-                <button onclick="saveRuleToCloud()" id="btn-save-rule" class="w-full bg-indigo-600 py-5 rounded-3xl font-bold shadow-xl mt-4 text-white">
-                    Activate Automation
-                </button>
+                <button onclick="saveRuleToCloud()" id="btn-save-rule" class="bg-indigo-600 w-full py-5 rounded-3xl font-bold text-white shadow-xl mt-4">Activate Automation</button>
             </div>
         </div>
     </div>
@@ -244,164 +230,143 @@
 
         lucide.createIcons();
 
-        function notify(message, isError = true) {
+        function notify(msg, isError = true) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            const color = isError ? 'bg-rose-600' : 'bg-emerald-600';
-            toast.className = `toast-slide ${color} text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold border border-white/10`;
-            toast.innerHTML = `<i data-lucide="${isError ? 'alert-circle' : 'check-circle'}" class="w-5 h-5"></i> <span>${message}</span>`;
+            toast.className = `toast-slide ${isError ? 'bg-rose-600' : 'bg-emerald-600'} text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold`;
+            toast.innerHTML = `<i data-lucide="${isError ? 'alert-circle' : 'check-circle'}" class="w-5 h-5"></i> <span>${msg}</span>`;
             container.appendChild(toast);
             lucide.createIcons();
             setTimeout(() => toast.remove(), 5000);
         }
 
-        const initInterval = setInterval(() => {
+        const checkAuth = setInterval(() => {
             if (window.auth) {
-                clearInterval(initInterval);
-                bootstrapApp();
+                clearInterval(checkAuth);
+                onAuthStateChanged(window.auth, (user) => {
+                    if (user) {
+                        document.getElementById('userAvatar').innerText = user.uid.substring(0,2).toUpperCase();
+                        document.getElementById('userDisplay').innerText = `Admin (${user.uid.substring(0,4)})`;
+                        document.getElementById('full-user-id-field').value = user.uid; // Set full ID here
+                        document.getElementById('status-dot').className = 'w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse';
+                        document.getElementById('status-text').innerText = 'Online';
+                        document.getElementById('status-text').className = 'text-[10px] text-emerald-400';
+                        document.getElementById('badge-text').innerText = 'CONNECTED TO CLOUD';
+                        document.getElementById('badge-dot').className = 'w-2 h-2 bg-emerald-500 rounded-full animate-pulse';
+                        setupStreams(user.uid);
+                    } else {
+                        signInAnonymously(window.auth);
+                    }
+                });
             }
         }, 100);
 
-        function bootstrapApp() {
-            onAuthStateChanged(window.auth, (user) => {
-                if (user) {
-                    document.getElementById('userAvatar').innerText = user.uid.substring(0,2).toUpperCase();
-                    document.getElementById('userDisplay').innerText = `Admin (${user.uid.substring(0,4)})`;
-                    document.getElementById('status-dot').className = 'w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse';
-                    document.getElementById('status-text').innerText = 'Online';
-                    document.getElementById('status-text').className = 'text-[10px] text-emerald-400';
-                    document.getElementById('badge-text').innerText = 'CONNECTED TO CLOUD';
-                    document.getElementById('badge-dot').className = 'w-2 h-2 bg-emerald-500 rounded-full animate-pulse';
-                    setupDataStreams(user.uid);
-                } else {
-                    signInAnonymously(window.auth).catch(err => notify("Auth Error: Enable 'Anonymous' in Firebase Console"));
-                }
-            });
-        }
-
-        function setupDataStreams(uid) {
+        function setupStreams(uid) {
             const { collection, onSnapshot, doc, getDoc } = window.fb;
-            const qRules = collection(window.db, "artifacts", window.appId, "users", uid, "automations");
-            onSnapshot(qRules, (snap) => {
+            onSnapshot(collection(window.db, "artifacts", window.appId, "users", uid, "automations"), (snap) => {
                 const grid = document.getElementById('rules-grid');
                 grid.innerHTML = '';
-                snap.forEach(dSnap => {
-                    const r = dSnap.data();
+                snap.forEach(docSnap => {
+                    const r = docSnap.data();
                     grid.innerHTML += `
-                        <div class="glass p-7 rounded-3xl border-l-4 ${r.is_active ? 'border-indigo-500' : 'border-slate-800'} group transition-all">
+                        <div class="glass p-7 rounded-3xl border-l-4 border-indigo-500 group transition-all">
                             <div class="flex justify-between items-start mb-4">
-                                <span class="text-[10px] font-bold bg-indigo-500/20 text-indigo-400 px-3 py-1.5 rounded-xl border border-indigo-500/10 uppercase italic">
-                                    Trigger: ${r.keyword}
-                                </span>
-                                <button onclick="window.removeRule('${dSnap.id}')" class="text-slate-600 hover:text-rose-500 p-2 rounded-xl transition-all"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                                <span class="text-[10px] font-bold bg-indigo-500/20 text-indigo-400 px-3 py-1.5 rounded-xl border border-indigo-500/10 uppercase tracking-widest italic">${r.keyword}</span>
+                                <button onclick="window.removeRule('${docSnap.id}')" class="text-slate-600 hover:text-rose-500 p-2 rounded-xl transition-all"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
                             </div>
-                            <p class="text-sm text-slate-300 line-clamp-3 leading-relaxed italic">"${r.message}"</p>
+                            <p class="text-sm text-slate-300 line-clamp-3 italic">"${r.message}"</p>
                         </div>
                     `;
                 });
                 lucide.createIcons();
             });
 
-            const qLogs = collection(window.db, "artifacts", window.appId, "users", uid, "logs");
-            onSnapshot(qLogs, (snapshot) => {
+            onSnapshot(collection(window.db, "artifacts", window.appId, "users", uid, "logs"), (snap) => {
                 const body = document.getElementById('logs-table-body');
                 body.innerHTML = '';
                 let delivered = 0;
-                let failCount = 0;
-                const sorted = snapshot.docs.map(d => d.data()).sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+                const sorted = snap.docs.map(d => d.data()).sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
                 sorted.forEach(log => {
                     if(log.status === 'sent') delivered++;
-                    if(log.status === 'failed') failCount++;
-                    const timeStr = log.timestamp ? new Date(log.timestamp.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
+                    const time = log.timestamp ? new Date(log.timestamp.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
                     body.innerHTML += `
                         <tr class="hover:bg-indigo-500/5 transition-colors">
-                            <td class="px-6 py-5 text-slate-500 text-xs">${timeStr}</td>
+                            <td class="px-6 py-5 text-slate-500 text-xs">${time}</td>
                             <td class="px-6 py-5 font-bold text-white">@${log.user}</td>
                             <td class="px-6 py-5 text-slate-400 max-w-xs truncate italic">"${log.comment}"</td>
                             <td class="px-6 py-5"><span class="px-3 py-1 rounded-full ${log.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'} text-[10px] font-bold border uppercase">${log.status}</span></td>
                         </tr>
                     `;
                 });
-                document.getElementById('stat-scanned').innerText = snapshot.size;
+                document.getElementById('stat-scanned').innerText = snap.size;
                 document.getElementById('stat-sent').innerText = delivered;
-                document.getElementById('stat-failed').innerText = failCount;
                 document.getElementById('stat-saved').innerText = (delivered * 0.05).toFixed(1);
             });
 
-            const docRef = doc(window.db, "artifacts", window.appId, "users", uid, "settings", "main");
-            getDoc(docRef).then(snap => {
+            getDoc(doc(window.db, "artifacts", window.appId, "users", uid, "settings", "main")).then(snap => {
                 if (snap.exists()) {
-                    const data = snap.data();
-                    document.getElementById('field-token').value = data.instagram_access_token || '';
-                    document.getElementById('field-pageid').value = data.instagram_page_id || '';
+                    document.getElementById('field-token').value = snap.data().instagram_access_token || '';
+                    document.getElementById('field-pageid').value = snap.data().instagram_page_id || '';
                 }
             });
         }
 
         window.saveRuleToCloud = async () => {
-            const keyword = document.getElementById('input-keyword').value.trim();
-            const message = document.getElementById('input-message').value.trim();
-            const url = document.getElementById('input-url').value.trim();
-            if (!keyword || !message) return notify("Missing keyword or message");
+            const kw = document.getElementById('input-keyword').value.trim();
+            const msg = document.getElementById('input-message').value.trim();
+            if (!kw || !msg) return notify("Missing info");
             const btn = document.getElementById('btn-save-rule');
             btn.innerText = 'Syncing...';
             try {
-                const { collection, addDoc, serverTimestamp } = window.fb;
-                await addDoc(collection(window.db, "artifacts", window.appId, "users", window.auth.currentUser.uid, "automations"), {
-                    keyword: keyword.toUpperCase(), message, link: url, is_active: true, created_at: serverTimestamp()
+                await window.fb.addDoc(window.fb.collection(window.db, "artifacts", window.appId, "users", window.auth.currentUser.uid, "automations"), {
+                    keyword: kw.toUpperCase(), message: msg, is_active: true, created_at: window.fb.serverTimestamp()
                 });
                 closeRuleModal();
-                notify("Rule activated!", false);
-                document.getElementById('input-keyword').value = '';
-                document.getElementById('input-message').value = '';
+                notify("Success!", false);
             } catch (err) { notify("Sync failed"); }
             btn.innerText = 'Activate Automation';
         };
 
         window.removeRule = async (id) => {
             if(confirm('Delete rule?')) {
-                const { doc, deleteDoc } = window.fb;
-                await deleteDoc(doc(window.db, "artifacts", window.appId, "users", window.auth.currentUser.uid, "automations", id));
+                await window.fb.deleteDoc(window.fb.doc(window.db, "artifacts", window.appId, "users", window.auth.currentUser.uid, "automations", id));
             }
         };
 
         window.saveMetaSettings = async () => {
-            const token = document.getElementById('field-token').value.trim();
-            const pageId = document.getElementById('field-pageid').value.trim();
             const btn = document.getElementById('settings-save-btn');
             btn.innerText = 'Syncing...';
             try {
-                const { doc, setDoc, serverTimestamp } = window.fb;
-                await setDoc(doc(window.db, "artifacts", window.appId, "users", window.auth.currentUser.uid, "settings", "main"), {
-                    instagram_access_token: token, instagram_page_id: pageId, is_active: true, last_updated: serverTimestamp()
+                await window.fb.setDoc(window.fb.doc(window.db, "artifacts", window.appId, "users", window.auth.currentUser.uid, "settings", "main"), {
+                    instagram_access_token: document.getElementById('field-token').value.trim(),
+                    instagram_page_id: document.getElementById('field-pageid').value.trim(),
+                    is_active: true, last_updated: window.fb.serverTimestamp()
                 });
-                notify("Credentials Updated!", false);
+                notify("Keys Saved!", false);
             } catch (err) { notify("Save failed"); }
             btn.innerText = 'Save Configuration';
         };
 
-        window.changeTab = (tabId) => {
+        window.copyFullId = () => {
+            const field = document.getElementById('full-user-id-field');
+            field.select();
+            document.execCommand('copy');
+            notify("Full ID copied to clipboard!", false);
+        };
+
+        window.changeTab = (id) => {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById('view-' + tabId).classList.add('active');
+            document.getElementById('view-' + id).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(b => {
                 b.classList.remove('active-tab'); b.classList.add('text-slate-400');
             });
-            const active = document.querySelector(`[data-tab="${tabId}"]`);
+            const active = document.querySelector(`[data-tab="${id}"]`);
             active.classList.add('active-tab'); active.classList.remove('text-slate-400');
-            document.getElementById('headerTitle').innerText = tabId.charAt(0).toUpperCase() + tabId.slice(1);
+            document.getElementById('headerTitle').innerText = id.charAt(0).toUpperCase() + id.slice(1);
         };
 
-        window.openRuleModal = () => {
-            document.getElementById('modal-rule').classList.remove('hidden');
-            if(!document.getElementById('input-message').value) {
-                document.getElementById('input-message').value = "Goweed Ultra+ Formula: Acetic acid 400ml, Pelargonic acid 150ml, Lactic acid 100ml, Tween 20-100ml, Msw-50ml, Sls-150gm, Capric acid 200ml.";
-                document.getElementById('input-keyword').value = "FORMULA";
-            }
-        };
+        window.openRuleModal = () => document.getElementById('modal-rule').classList.remove('hidden');
         window.closeRuleModal = () => document.getElementById('modal-rule').classList.add('hidden');
-        
-        // Auto-detect current URL for guide
-        document.getElementById('display-url').innerText = window.location.origin + "/api/webhooks/instagram";
     </script>
 </body>
 </html>
