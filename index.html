@@ -50,7 +50,7 @@
 </head>
 <body class="h-screen overflow-hidden flex text-slate-200">
 
-    <div id="toast-container" class="fixed bottom-6 right-6 z-[200] space-y-2"></div>
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[200] space-y-2 max-w-sm"></div>
 
     <!-- Sidebar -->
     <aside class="w-72 border-r border-slate-900 flex flex-col p-6 hidden lg:flex bg-slate-950/50">
@@ -80,6 +80,7 @@
             </button>
         </nav>
 
+        <!-- Dynamic User Profile -->
         <div class="mt-auto p-4 glass rounded-2xl flex items-center gap-3 border-indigo-500/20">
             <div id="sidebar-img-container" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-700 shadow-inner">
                 <i data-lucide="user" class="w-5 h-5 text-slate-500" id="sidebar-icon"></i>
@@ -115,34 +116,34 @@
             <div id="view-dashboard" class="tab-content active space-y-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div class="glass p-6 rounded-3xl border-l-4 border-l-indigo-500 shadow-xl">
-                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter">Engagement Scanned</p>
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter text-indigo-400">Comments Scanned</p>
                         <p class="text-4xl font-black mt-2 text-white" id="stat-scanned">0</p>
                     </div>
                     <div class="glass p-6 rounded-3xl border-l-4 border-l-emerald-500 shadow-xl">
-                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter">Automated Replies</p>
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter text-emerald-400">DMs Sent</p>
                         <p class="text-4xl font-black mt-2 text-emerald-400" id="stat-sent">0</p>
                     </div>
                     <div class="glass p-6 rounded-3xl border-l-4 border-l-rose-500 shadow-xl">
-                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter">Failed Handshakes</p>
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter text-rose-400">Failures</p>
                         <p class="text-4xl font-black mt-2 text-rose-400" id="stat-failed">0</p>
                     </div>
                     <div class="glass p-6 rounded-3xl border-l-4 border-l-amber-500 shadow-xl">
-                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter">Hours Saved</p>
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter text-amber-400">Hours Saved</p>
                         <p class="text-4xl font-black mt-2 text-amber-400" id="stat-saved">0.0</p>
                     </div>
                 </div>
 
                 <div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 rounded-[2.5rem] p-12 relative overflow-hidden shadow-2xl group">
                     <div class="relative z-10 max-w-lg">
-                        <h2 class="text-4xl font-black mb-4 text-white leading-tight">Automation Engine Active</h2>
-                        <p class="text-indigo-100 text-lg mb-8 opacity-90">LinkMyDM is monitoring your Instagram comments. Create rules below to send links automatically.</p>
+                        <h2 class="text-4xl font-black mb-4 text-white leading-tight">Automation Active</h2>
+                        <p class="text-indigo-100 text-lg mb-8 opacity-90">LinkMyDM is ready to handle your herbicide inquiries. Define your keywords below to start the magic.</p>
                         <div class="flex gap-4">
                             <button onclick="openRuleModal()" class="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all shadow-xl active:scale-95">
-                                + Add Keyword Rule
+                                + Add Keyword Trigger
                             </button>
                         </div>
                     </div>
-                    <i data-lucide="zap" class="absolute -right-16 -bottom-16 w-96 h-96 text-white/10 rotate-12 transition-all duration-1000"></i>
+                    <i data-lucide="zap" class="absolute -right-16 -bottom-16 w-96 h-96 text-white/10 rotate-12 group-hover:rotate-0 transition-all duration-1000"></i>
                 </div>
             </div>
 
@@ -151,9 +152,9 @@
                 <div class="flex justify-between items-end">
                     <div>
                         <h2 class="text-3xl font-black text-white">Keyword Rules</h2>
-                        <p class="text-slate-500 text-sm mt-1">Define keywords (like "GOWEED") to trigger automated DMs.</p>
+                        <p class="text-slate-500 text-sm mt-1">Define keywords like "FORMULA" to trigger automated replies.</p>
                     </div>
-                    <button onclick="openRuleModal()" class="bg-indigo-600 px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-600/20">
+                    <button onclick="openRuleModal()" class="bg-indigo-600 px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 text-white hover:bg-indigo-500 transition-all">
                         <i data-lucide="plus" class="w-5 h-5"></i> New Rule
                     </button>
                 </div>
@@ -163,8 +164,8 @@
             <!-- Tab: Media Feed -->
             <div id="view-media" class="tab-content space-y-8">
                 <div>
-                    <h2 class="text-3xl font-black text-white">Instagram Media</h2>
-                    <p class="text-slate-400 text-sm mt-1">Live monitoring is automatically active on your latest posts below.</p>
+                    <h2 class="text-3xl font-black text-white">My Content</h2>
+                    <p class="text-slate-400 text-sm mt-1">All posts below are automatically monitored for keywords.</p>
                 </div>
                 <div id="media-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <div class="shimmer h-80 rounded-3xl"></div>
@@ -178,14 +179,14 @@
             <div id="view-logs" class="tab-content space-y-4">
                 <div class="glass rounded-3xl overflow-hidden shadow-2xl">
                     <div class="p-6 border-b border-slate-900 bg-slate-900/30 flex justify-between items-center">
-                        <h3 class="font-bold text-white tracking-tight">System Logs</h3>
-                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-black">LIVE</span>
+                        <h3 class="font-bold text-white tracking-tight text-lg">Activity Logs</h3>
+                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-black tracking-widest">LIVE STREAM</span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm">
-                            <thead class="bg-slate-950/50 text-slate-500">
+                            <thead class="bg-slate-950/50 text-slate-500 border-b border-slate-900">
                                 <tr>
-                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest">Timestamp</th>
+                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest">Time</th>
                                     <th class="px-8 py-5 uppercase text-[10px] tracking-widest">User</th>
                                     <th class="px-8 py-5 uppercase text-[10px] tracking-widest">Comment</th>
                                     <th class="px-8 py-5 uppercase text-[10px] tracking-widest">Status</th>
@@ -201,12 +202,12 @@
             <div id="view-settings" class="tab-content space-y-8">
                 <div class="glass p-10 rounded-[2.5rem] space-y-10 max-w-2xl border-indigo-500/10 shadow-2xl">
                     <div class="flex items-center gap-5">
-                        <div class="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center text-indigo-400 border border-indigo-500/20 shadow-lg shadow-indigo-500/10">
-                            <i data-lucide="instagram" class="w-8 h-8"></i>
+                        <div class="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center text-indigo-400 border border-indigo-500/20">
+                            <i data-lucide="settings-2" class="w-8 h-8"></i>
                         </div>
                         <div>
-                            <h3 class="text-2xl font-black text-white">Link Meta Account</h3>
-                            <p class="text-slate-500 text-sm">Paste your credentials to start fetching Reels and Profile info.</p>
+                            <h3 class="text-2xl font-black text-white tracking-tight">Sync Meta API</h3>
+                            <p class="text-slate-500 text-sm">Provide your keys to fetch your profile and media.</p>
                         </div>
                     </div>
                     <div class="space-y-6">
@@ -215,8 +216,9 @@
                             <input type="password" id="field-token" class="w-full p-5 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 text-white font-mono text-xs transition-all border border-slate-800" placeholder="Paste IGAAT... token">
                         </div>
                         <div class="space-y-3">
-                            <label class="text-[10px] text-slate-500 uppercase font-black tracking-widest">Meta Page ID</label>
-                            <input type="text" id="field-pageid" class="w-full p-5 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 text-white font-mono text-sm transition-all border border-slate-800" placeholder="e.g. 6158...">
+                            <label class="text-[10px] text-slate-500 uppercase font-black tracking-widest">Instagram Business ID (or Page ID)</label>
+                            <input type="text" id="field-pageid" class="w-full p-5 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 text-white font-mono text-sm transition-all border border-slate-800" placeholder="e.g. 1784... or 6158...">
+                            <p class="text-[10px] text-slate-600 italic">Note: Use the ID from your Meta App Dashboard.</p>
                         </div>
                         <button onclick="saveMetaSettings()" id="settings-save-btn" class="bg-indigo-600 w-full py-5 rounded-2xl font-black text-white shadow-xl shadow-indigo-600/30 hover:bg-indigo-500 active:scale-[0.98] transition-all">
                             Save & Sync Profile
@@ -232,7 +234,7 @@
     <div id="modal-rule" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-[100] hidden flex items-center justify-center p-6">
         <div class="glass w-full max-w-xl rounded-[3rem] p-12 space-y-8 shadow-2xl border-white/5">
             <div class="flex justify-between items-center text-white">
-                <h3 class="text-3xl font-black tracking-tight">New Trigger Rule</h3>
+                <h3 class="text-3xl font-black tracking-tight">New Trigger</h3>
                 <button onclick="closeRuleModal()" class="p-2 bg-slate-800 rounded-full text-slate-400 hover:text-white transition-all"><i data-lucide="x"></i></button>
             </div>
             <div class="space-y-6">
@@ -241,8 +243,8 @@
                     <input type="text" id="input-keyword" class="w-full p-5 rounded-2xl font-mono text-indigo-400 text-lg uppercase outline-none focus:ring-2 focus:ring-indigo-500 border-none bg-slate-900" placeholder="e.g. FORMULA">
                 </div>
                 <div>
-                    <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">The DM Response</label>
-                    <textarea id="input-message" rows="5" class="w-full p-5 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 border-none resize-none bg-slate-900" placeholder="Type your automated formula or message..."></textarea>
+                    <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Auto-Response</label>
+                    <textarea id="input-message" rows="5" class="w-full p-5 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 border-none resize-none bg-slate-900" placeholder="Type your automated response..."></textarea>
                 </div>
                 <button onclick="saveRuleToCloud()" id="btn-save-rule" class="bg-indigo-600 w-full py-6 rounded-[2rem] font-black text-lg text-white shadow-2xl shadow-indigo-600/40 mt-4 active:scale-95 transition-all">
                     Activate Automation
@@ -282,59 +284,59 @@
             }
         }, 100);
 
-        // --- NEW SMART DISCOVERY LOGIC ---
+        // --- ENHANCED ME PROTOCOL DISCOVERY ---
         async function fetchInstagramDetails(token, id) {
-            if (!token || !id) return;
+            if (!token) return;
             
-            document.getElementById('status-text').innerText = "Scanning Meta...";
+            document.getElementById('status-text').innerText = "Connecting...";
             document.getElementById('status-dot').className = 'w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse';
 
             try {
                 let igId = id;
                 
-                // 1. Check if ID is a Facebook Page ID (If it's short or doesn't start with 1784)
-                if (id.length < 15 || !id.startsWith('1784')) {
+                // If token starts with IGAAT, use /me shortcut
+                if (token.startsWith('IGAAT')) {
+                    const meRes = await fetch(`https://graph.facebook.com/v19.0/me?fields=id,username,name,profile_picture_url&access_token=${token}`);
+                    const meData = await meRes.json();
+                    if (meData.id) {
+                        igId = meData.id;
+                        updateProfileUI(meData);
+                    }
+                } else if (id && !id.startsWith('1784')) {
+                    // Try to resolve IG ID from FB Page ID
                     const pageRes = await fetch(`https://graph.facebook.com/v19.0/${id}?fields=instagram_business_account&access_token=${token}`);
                     const pageData = await pageRes.json();
-                    
-                    if (pageData.error) {
-                         // If 400 error, maybe the ID IS already an IG ID.
-                         console.warn("Direct Page lookup failed, trying ID as Instagram ID...");
-                    } else {
-                        igId = pageData.instagram_business_account?.id;
-                    }
+                    if (pageData.instagram_business_account) igId = pageData.instagram_business_account.id;
                 }
 
-                // 2. Fetch Profile Info using the resolved IG ID
+                // Final Profile Fetch
                 const profileRes = await fetch(`https://graph.facebook.com/v19.0/${igId}?fields=username,name,profile_picture_url&access_token=${token}`);
                 const profileData = await profileRes.json();
-                
-                if (profileData.error) throw new Error(profileData.error.message);
+                if (profileData.username) updateProfileUI(profileData);
 
-                if (profileData.username) {
-                    document.getElementById('sidebar-username').innerText = `@${profileData.username}`;
-                    document.getElementById('status-dot').className = 'w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse';
-                    document.getElementById('status-text').innerText = 'Connected';
-                    document.getElementById('status-text').className = 'text-[10px] text-emerald-400 font-bold';
-                    
-                    if (profileData.profile_picture_url) {
-                        const avatar = document.getElementById('sidebar-avatar');
-                        avatar.src = profileData.profile_picture_url;
-                        avatar.classList.remove('hidden');
-                        document.getElementById('sidebar-icon').classList.add('hidden');
-                    }
-
-                    // 3. Fetch Media
-                    const mediaRes = await fetch(`https://graph.facebook.com/v19.0/${igId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=20&access_token=${token}`);
-                    const mediaData = await mediaRes.json();
-                    if (mediaData.data) renderMediaGrid(mediaData.data);
-                }
+                // Media Fetch
+                const mediaRes = await fetch(`https://graph.facebook.com/v19.0/${igId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=20&access_token=${token}`);
+                const mediaData = await mediaRes.json();
+                if (mediaData.data) renderMediaGrid(mediaData.data);
 
             } catch (err) {
                 console.error("Meta Sync Error:", err);
-                document.getElementById('status-text').innerText = "Meta Auth Error";
+                document.getElementById('status-text').innerText = "Meta Connection Issue";
                 document.getElementById('status-dot').className = 'w-1.5 h-1.5 bg-rose-500 rounded-full';
-                notify(`Meta Sync Failed: Please check your Token permissions in Meta Portal.`);
+            }
+        }
+
+        function updateProfileUI(data) {
+            document.getElementById('sidebar-username').innerText = `@${data.username}`;
+            document.getElementById('status-dot').className = 'w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse';
+            document.getElementById('status-text').innerText = 'Online (Meta Live)';
+            document.getElementById('status-text').className = 'text-[10px] text-emerald-400 font-bold';
+            
+            if (data.profile_picture_url) {
+                const avatar = document.getElementById('sidebar-avatar');
+                avatar.src = data.profile_picture_url;
+                avatar.classList.remove('hidden');
+                document.getElementById('sidebar-icon').classList.add('hidden');
             }
         }
 
@@ -348,13 +350,9 @@
                         <img src="${url}" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-all duration-700" loading="lazy">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent p-6 flex flex-col justify-end">
                             <div class="flex items-center gap-2 mb-2">
-                                <span class="text-[8px] bg-indigo-600 text-white px-2 py-0.5 rounded-lg font-black tracking-widest uppercase">Monitored</span>
-                                <span class="text-[8px] bg-white/10 text-white px-2 py-0.5 rounded-lg font-black uppercase">${item.media_type}</span>
+                                <span class="text-[8px] bg-indigo-600 text-white px-2 py-0.5 rounded-lg font-black tracking-widest uppercase text-[7px]">Monitored</span>
                             </div>
-                            <p class="text-[10px] text-white/70 line-clamp-2 italic leading-relaxed">"${item.caption || 'No caption'}"</p>
-                        </div>
-                        <div class="absolute top-4 right-4 p-2 bg-black/40 backdrop-blur-md rounded-xl border border-white/10 opacity-0 group-hover:opacity-100 transition-all">
-                            <i data-lucide="external-link" class="w-4 h-4 text-white"></i>
+                            <p class="text-[10px] text-white/70 line-clamp-2 italic leading-relaxed">"${item.caption || '...'}"</p>
                         </div>
                     </div>
                 `;
@@ -365,7 +363,7 @@
         function setupStreams(uid) {
             const { collection, onSnapshot, doc, getDoc } = window.fb;
             
-            // Rules Stream
+            // Rules
             onSnapshot(collection(window.db, "artifacts", window.appId, "users", uid, "automations"), (snap) => {
                 const grid = document.getElementById('rules-grid');
                 grid.innerHTML = '';
@@ -374,17 +372,17 @@
                     grid.innerHTML += `
                         <div class="glass p-8 rounded-[2.5rem] border-l-8 border-indigo-600 shadow-2xl">
                             <div class="flex justify-between items-start mb-4">
-                                <span class="text-[10px] font-black bg-indigo-500/20 text-indigo-400 px-4 py-2 rounded-xl border border-indigo-500/10 tracking-[0.2em] uppercase">${r.keyword}</span>
+                                <span class="text-[10px] font-black bg-indigo-500/20 text-indigo-400 px-4 py-2 rounded-xl border border-indigo-500/10 uppercase italic tracking-widest">${r.keyword}</span>
                                 <button onclick="window.removeRule('${dSnap.id}')" class="text-slate-600 hover:text-rose-500 p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
                             </div>
-                            <p class="text-sm text-slate-300 line-clamp-4 leading-relaxed italic">"${r.message}"</p>
+                            <p class="text-sm text-slate-300 line-clamp-4 italic">"${r.message}"</p>
                         </div>
                     `;
                 });
                 lucide.createIcons();
             });
 
-            // Logs Stream (FIXED TYPO HERE)
+            // Logs (FIXED TYPO)
             onSnapshot(collection(window.db, "artifacts", window.appId, "users", uid, "logs"), (snap) => {
                 const body = document.getElementById('logs-table-body');
                 body.innerHTML = '';
@@ -396,15 +394,14 @@
                     if(log.status === 'failed') failCount++;
                     const time = log.timestamp ? new Date(log.timestamp.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Now';
                     body.innerHTML += `
-                        <tr class="hover:bg-indigo-500/5 transition-all">
-                            <td class="px-8 py-6 text-slate-500 text-xs font-mono">${time}</td>
-                            <td class="px-8 py-6 font-black text-white text-sm">@${log.user}</td>
-                            <td class="px-8 py-6 text-slate-400 max-w-xs truncate italic">"${log.comment}"</td>
-                            <td class="px-8 py-6"><span class="px-4 py-1.5 rounded-full ${log.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'} text-[10px] font-black border uppercase">${log.status}</span></td>
+                        <tr class="hover:bg-indigo-500/5 transition-all text-xs">
+                            <td class="px-8 py-6 text-slate-500 font-mono">${time}</td>
+                            <td class="px-8 py-6 font-black text-white">@${log.user}</td>
+                            <td class="px-8 py-6 text-slate-400 italic">"${log.comment}"</td>
+                            <td class="px-8 py-6"><span class="px-4 py-1.5 rounded-full ${log.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} font-black uppercase text-[8px]">${log.status}</span></td>
                         </tr>
                     `;
                 });
-                // Updated variable name to match the parameter 'snap'
                 document.getElementById('stat-scanned').innerText = snap.size;
                 document.getElementById('stat-sent').innerText = delivered;
                 document.getElementById('stat-failed').innerText = failCount;
@@ -426,7 +423,7 @@
         window.saveRuleToCloud = async () => {
             const kw = document.getElementById('input-keyword').value.trim();
             const msg = document.getElementById('input-message').value.trim();
-            if (!kw || !msg) return notify("Both fields are required.");
+            if (!kw || !msg) return notify("Missing keyword or message.");
             const btn = document.getElementById('btn-save-rule');
             btn.innerText = 'Activating...';
             try {
@@ -434,13 +431,13 @@
                     keyword: kw.toUpperCase(), message: msg, is_active: true, created_at: window.fb.serverTimestamp()
                 });
                 closeRuleModal();
-                notify("Trigger is now LIVE!", false);
-            } catch (err) { notify("Sync error."); }
+                notify("Trigger activated!", false);
+            } catch (err) { notify("Sync failed."); }
             btn.innerText = 'Activate Automation';
         };
 
         window.removeRule = async (id) => {
-            if(confirm('Stop this automation?')) {
+            if(confirm('Delete rule?')) {
                 await window.fb.deleteDoc(window.fb.doc(window.db, "artifacts", window.appId, "users", window.auth.currentUser.uid, "automations", id));
             }
         };
@@ -448,9 +445,9 @@
         window.saveMetaSettings = async () => {
             const token = document.getElementById('field-token').value.trim();
             const pageId = document.getElementById('field-pageid').value.trim();
-            if (!token || !pageId) return notify("Please provide both ID and Token.");
+            if (!token) return notify("Please provide a Token.");
             const btn = document.getElementById('settings-save-btn');
-            btn.innerText = 'Connecting Meta...';
+            btn.innerText = 'Connecting...';
             try {
                 await window.fb.setDoc(window.fb.doc(window.db, "artifacts", window.appId, "users", window.auth.currentUser.uid, "settings", "main"), {
                     instagram_access_token: token, instagram_page_id: pageId, is_active: true, last_updated: window.fb.serverTimestamp()
@@ -471,14 +468,7 @@
             document.getElementById('headerTitle').innerText = id === 'media' ? 'MY CONTENT' : id;
         };
 
-        window.openRuleModal = () => {
-            document.getElementById('modal-rule').classList.remove('hidden');
-            // Pre-fill with formula if empty
-            if(!document.getElementById('input-message').value) {
-                document.getElementById('input-message').value = "Hey! Here is the Goweed Ultra+ formula: Acetic acid - 400ml, Pelargonic acid - 150ml, Lactic acid - 100ml, Tween 20-100ml, Msw-50ml, Sls-150gm, Capric acid - 200ml.";
-                document.getElementById('input-keyword').value = "FORMULA";
-            }
-        };
+        window.openRuleModal = () => document.getElementById('modal-rule').classList.remove('hidden');
         window.closeRuleModal = () => document.getElementById('modal-rule').classList.add('hidden');
     </script>
 </body>
