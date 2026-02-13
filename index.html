@@ -93,7 +93,7 @@
                 <img id="sidebar-avatar" class="w-full h-full object-cover hidden" src="" alt="" onload="this.classList.add('loaded')">
             </div>
             <div class="overflow-hidden">
-                <p class="text-xs font-bold truncate text-white" id="sidebar-username">Connecting Meta...</p>
+                <p class="text-xs font-bold truncate text-white" id="sidebar-username">Connecting...</p>
                 <div class="flex items-center gap-1.5">
                     <span id="status-dot" class="w-1.5 h-1.5 bg-slate-600 rounded-full"></span>
                     <p class="text-[10px] text-slate-500" id="status-text">Disconnected</p>
@@ -209,6 +209,21 @@
 
             <!-- Tab: Settings -->
             <div id="view-settings" class="tab-content space-y-8">
+                <!-- IMPORTANT: SYSTEM ID HELPER -->
+                <div class="bg-indigo-600/10 border border-indigo-500/30 p-8 rounded-[2rem] space-y-4 max-w-2xl shadow-xl">
+                    <div class="flex items-center gap-3 text-indigo-400">
+                        <i data-lucide="fingerprint" class="w-6 h-6"></i>
+                        <h3 class="font-bold">System ID (Required for DMs)</h3>
+                    </div>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Copy the <b>Full ID</b> below and save it as <code class="text-indigo-300">FIREBASE_USER_ID</code> in Vercel Settings. This is how the DM sender finds your rules.
+                    </p>
+                    <div class="flex gap-2">
+                        <input type="text" id="full-user-id-field" readonly class="flex-1 p-4 rounded-xl font-mono text-xs text-indigo-300 border border-indigo-500/20 bg-indigo-950/30" value="Loading...">
+                        <button onclick="copyFullId()" class="bg-indigo-600 px-6 rounded-xl font-bold text-xs hover:bg-indigo-500 transition-all">Copy</button>
+                    </div>
+                </div>
+
                 <div class="glass p-10 rounded-[2.5rem] space-y-10 max-w-2xl border-indigo-500/10 shadow-2xl">
                     <div class="flex items-center gap-5">
                         <div class="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center text-indigo-400 border border-indigo-500/20">
@@ -296,7 +311,10 @@
             if (window.auth) {
                 clearInterval(checkAuth);
                 onAuthStateChanged(window.auth, (user) => {
-                    if (user) setupStreams(user.uid);
+                    if (user) {
+                        document.getElementById('full-user-id-field').value = user.uid;
+                        setupStreams(user.uid);
+                    }
                     else signInAnonymously(window.auth);
                 });
             }
@@ -396,7 +414,6 @@
 
         function setupStreams(uid) {
             const { collection, onSnapshot, doc, getDoc } = window.fb;
-            
             onSnapshot(collection(window.db, "artifacts", window.appId, "users", uid, "automations"), (snap) => {
                 const grid = document.getElementById('rules-grid');
                 grid.innerHTML = '';
@@ -504,6 +521,13 @@
                 notify("Linked to Meta!", false);
                 setTimeout(() => location.reload(), 1000);
             } catch (err) { notify("Sync failed."); }
+        };
+
+        window.copyFullId = () => {
+            const field = document.getElementById('full-user-id-field');
+            field.select();
+            document.execCommand('copy');
+            notify("Full ID copied!", false);
         };
 
         window.changeTab = (id) => {
