@@ -1,27 +1,24 @@
-// This is the "Ear" that listens to Instagram comments 24/7
+// This is the "Ear" that listens to Instagram 24/7
 export default async function handler(req, res) {
-  // 1. Handle the "Handshake" from Meta (Verification)
+  // MUST match the password in your Meta Portal
+  const MY_VERIFY_TOKEN = "PedduAutodm123"; 
+
+  // 1. Handshake with Meta
   if (req.method === 'GET') {
-    const mode = req.query['hub.mode'];
     const token = req.query['hub.verify_token'];
     const challenge = req.query['hub.challenge'];
 
-    // This checks if the "password" you set in Meta matches
-    if (mode === 'subscribe') {
-      console.log("Handshake successful!");
+    if (token === MY_VERIFY_TOKEN) {
+      console.log("Meta handshake successful!");
       return res.status(200).send(challenge);
     }
+    return res.status(403).send('Wrong Password');
   }
 
-  // 2. Handle incoming Comments
+  // 2. Incoming Comment Processing
   if (req.method === 'POST') {
-    const body = req.body;
-    
-    // We just acknowledge receipt to Meta so they don't keep retrying
     res.status(200).json({ status: 'received' });
-
-    // In a full setup, this is where we would trigger the DM.
-    // For now, this confirms your "Ear" is working!
-    console.log("New comment received:", JSON.stringify(body));
+    console.log("New comment detected:", JSON.stringify(req.body));
+    // The DM logic triggers here...
   }
 }
