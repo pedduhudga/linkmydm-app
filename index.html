@@ -46,7 +46,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         input, textarea { background: #0f172a !important; border: 1px solid #1e293b !important; color: white !important; }
-        .insta-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .insta-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; }
         .insta-card:hover { transform: translateY(-4px); border-color: rgba(99, 102, 241, 0.4); }
         .shimmer { background: linear-gradient(90deg, #0f172a 25%, #1e293b 50%, #0f172a 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
@@ -75,18 +75,17 @@
                 <i data-lucide="clapperboard" class="w-5 h-5"></i> Content Library
             </button>
             <button onclick="changeTab('automations')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="automations">
-                <i data-lucide="message-square-more" class="w-5 h-5"></i> Keyword Rules
+                <i data-lucide="message-square-more" class="w-5 h-5"></i> Automation Rules
             </button>
             <button onclick="changeTab('logs')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="logs">
                 <i data-lucide="scroll-text" class="w-5 h-5"></i> Event Logs
             </button>
-            <div class="pt-4 pb-2 px-4"><p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Settings</p></div>
+            <div class="pt-4 pb-2 px-4"><p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">System</p></div>
             <button onclick="changeTab('settings')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="settings">
                 <i data-lucide="settings-2" class="w-5 h-5"></i> Connection
             </button>
         </nav>
 
-        <!-- Profile Section -->
         <div class="mt-auto p-4 glass rounded-2xl flex items-center gap-3 border-indigo-500/20">
             <div id="sidebar-img-container" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-700 shadow-inner">
                 <i data-lucide="user" class="w-5 h-5 text-slate-500" id="sidebar-icon"></i>
@@ -118,7 +117,6 @@
 
         <div class="p-8 max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
             
-            <!-- Tab: Dashboard -->
             <div id="view-dashboard" class="tab-content active space-y-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div class="glass p-6 rounded-3xl border-l-4 border-l-indigo-500 shadow-xl">
@@ -126,7 +124,7 @@
                         <p class="text-4xl font-black mt-2 text-white" id="stat-scanned">0</p>
                     </div>
                     <div class="glass p-6 rounded-3xl border-l-4 border-l-emerald-500 shadow-xl">
-                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter text-emerald-400">DMs Dispatched</p>
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter text-emerald-400">Total Replies</p>
                         <p class="text-4xl font-black mt-2 text-emerald-400" id="stat-sent">0</p>
                     </div>
                     <div class="glass p-6 rounded-3xl border-l-4 border-l-rose-500 shadow-xl">
@@ -156,11 +154,10 @@
                 </div>
             </div>
 
-            <!-- Tab: Content Library -->
             <div id="view-media" class="tab-content space-y-8">
                 <div>
                     <h2 class="text-3xl font-black text-white">Content Library</h2>
-                    <p class="text-slate-400 text-sm mt-1">Click a Reel or Post to create a custom automation rule for that specific item.</p>
+                    <p class="text-slate-400 text-sm mt-1 italic">Click on any post below to create a custom automation for that specific content.</p>
                 </div>
                 <div id="media-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <div class="shimmer h-80 rounded-[2rem]"></div>
@@ -170,12 +167,11 @@
                 </div>
             </div>
 
-            <!-- Tab: Automation Rules -->
             <div id="view-automations" class="tab-content space-y-6">
                 <div class="flex justify-between items-end">
                     <div>
                         <h2 class="text-3xl font-black text-white">Active Rules</h2>
-                        <p class="text-slate-500 text-sm mt-1">Rules with thumbnails are assigned to specific posts. Comma-separated keywords are supported.</p>
+                        <p class="text-slate-500 text-sm mt-1">Rules with thumbnails apply only to specific posts. Global rules apply everywhere.</p>
                     </div>
                     <button onclick="openRuleModal()" class="bg-indigo-600 px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-600/20">
                         <i data-lucide="plus" class="w-5 h-5"></i> New Rule
@@ -184,21 +180,20 @@
                 <div id="rules-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
 
-            <!-- Tab: Logs -->
             <div id="view-logs" class="tab-content space-y-4">
                 <div class="glass rounded-3xl overflow-hidden shadow-2xl border-slate-800">
                     <div class="p-6 border-b border-slate-900 bg-slate-900/30 flex justify-between items-center">
                         <h3 class="font-bold text-white tracking-tight text-lg">Activity History</h3>
-                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-black tracking-widest">LIVE</span>
+                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-black tracking-widest uppercase">Live Monitoring</span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-950/50 text-slate-500 border-b border-slate-900">
                                 <tr>
-                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold text-slate-500">Time</th>
-                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold text-slate-500">User</th>
-                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold text-slate-500">Comment Captured</th>
-                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold text-slate-500">Status</th>
+                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">Time</th>
+                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">User</th>
+                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">Comment Captured</th>
+                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">Status</th>
                                 </tr>
                             </thead>
                             <tbody id="logs-table-body" class="divide-y divide-slate-900"></tbody>
@@ -207,7 +202,6 @@
                 </div>
             </div>
 
-            <!-- Tab: Settings -->
             <div id="view-settings" class="tab-content space-y-8">
                 <div class="glass p-10 rounded-[2.5rem] space-y-10 max-w-2xl border-indigo-500/10 shadow-2xl">
                     <div class="flex items-center gap-5">
@@ -260,11 +254,12 @@
             <div class="space-y-6">
                 <div>
                     <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Trigger Keywords (Comma separated)</label>
-                    <input type="text" id="input-keyword" class="w-full p-5 rounded-2xl font-mono text-indigo-400 text-lg uppercase outline-none focus:ring-2 focus:ring-indigo-500 border-none bg-slate-900" placeholder="e.g. LINK, INFO, HELP">
+                    <input type="text" id="input-keyword" class="w-full p-5 rounded-2xl font-mono text-indigo-400 text-lg uppercase outline-none focus:ring-2 focus:ring-indigo-500 border-none bg-slate-900" placeholder="e.g. LINK, INFO, PRICE">
+                    <p class="text-[9px] text-slate-600 mt-2 italic">Separating keywords by commas allows the bot to watch for multiple triggers at once.</p>
                 </div>
                 <div>
                     <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Automated DM Response</label>
-                    <textarea id="input-message" rows="5" class="w-full p-5 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 border-none resize-none bg-slate-900" placeholder="Type your automated response here..."></textarea>
+                    <textarea id="input-message" rows="5" class="w-full p-5 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 border-none resize-none bg-slate-900" placeholder="Type the message to be sent instantly..."></textarea>
                 </div>
                 <button onclick="saveRuleToCloud()" id="btn-save-rule" class="bg-indigo-600 w-full py-6 rounded-[2rem] font-black text-lg text-white shadow-2xl mt-4 active:scale-95 transition-all">
                     Activate Automation
@@ -398,7 +393,7 @@
                             ${isSpecific ? `
                                 <div class="flex items-center gap-3 p-3 bg-black/30 rounded-xl border border-white/5">
                                     <img src="${r.media_thumb}" class="w-10 h-10 rounded-lg object-cover">
-                                    <p class="text-[10px] text-slate-500 line-clamp-1 italic text-[9px]">Post Targeting Active</p>
+                                    <p class="text-[10px] text-slate-500 line-clamp-1 italic text-[9px]">Targeting Active</p>
                                 </div>
                             ` : ''}
 
@@ -424,7 +419,7 @@
                             <td class="px-8 py-6 text-slate-500 font-mono">${time}</td>
                             <td class="px-8 py-6 font-black text-white text-sm">@${log.user}</td>
                             <td class="px-8 py-6 text-slate-400 italic">"${log.comment}"</td>
-                            <td class="px-8 py-6"><span class="px-4 py-1.5 rounded-full ${log.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'} text-[10px] font-black border uppercase">${log.status}</span></td>
+                            <td class="px-8 py-6"><span class="px-4 py-1.5 rounded-full ${log.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} font-black uppercase text-[8px] tracking-widest border">${log.status}</span></td>
                         </tr>
                     `;
                 });
