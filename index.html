@@ -80,7 +80,7 @@
             <button onclick="changeTab('logs')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="logs">
                 <i data-lucide="scroll-text" class="w-5 h-5"></i> Event Logs
             </button>
-            <div class="pt-4 pb-2 px-4"><p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">System</p></div>
+            <div class="pt-4 pb-2 px-4"><p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Settings</p></div>
             <button onclick="changeTab('settings')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-900 transition-all" data-tab="settings">
                 <i data-lucide="settings-2" class="w-5 h-5"></i> Connection
             </button>
@@ -122,11 +122,11 @@
             <div id="view-dashboard" class="tab-content active space-y-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div class="glass p-6 rounded-3xl border-l-4 border-l-indigo-500 shadow-xl">
-                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter text-indigo-400">Scan Events</p>
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter text-indigo-400">Total Scan Events</p>
                         <p class="text-4xl font-black mt-2 text-white" id="stat-scanned">0</p>
                     </div>
                     <div class="glass p-6 rounded-3xl border-l-4 border-l-emerald-500 shadow-xl">
-                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter text-emerald-400">Total Replies</p>
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-tighter text-emerald-400">DMs Dispatched</p>
                         <p class="text-4xl font-black mt-2 text-emerald-400" id="stat-sent">0</p>
                     </div>
                     <div class="glass p-6 rounded-3xl border-l-4 border-l-rose-500 shadow-xl">
@@ -142,7 +142,7 @@
                 <div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 rounded-[2.5rem] p-12 relative overflow-hidden shadow-2xl group">
                     <div class="relative z-10 max-w-lg">
                         <h2 class="text-4xl font-black mb-4 text-white leading-tight">Post-Level Targeting</h2>
-                        <p class="text-indigo-100 text-lg mb-8 opacity-90">Your bot is active. You can set global rules for your whole account, or tap a post in the Library to create unique responses.</p>
+                        <p class="text-indigo-100 text-lg mb-8 opacity-90">LinkMyDM is ready. Create global rules for your account, or tap a Reel in the Library to set a specific automated response.</p>
                         <div class="flex gap-4">
                             <button onclick="openRuleModal()" class="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-bold hover:scale-105 shadow-xl active:scale-95 transition-all">
                                 + Add Global Rule
@@ -160,7 +160,7 @@
             <div id="view-media" class="tab-content space-y-8">
                 <div>
                     <h2 class="text-3xl font-black text-white">Content Library</h2>
-                    <p class="text-slate-400 text-sm mt-1">Select a specific Reel or Post to create a unique automation for it.</p>
+                    <p class="text-slate-400 text-sm mt-1">Click a Reel or Post to create a custom automation rule for that specific item.</p>
                 </div>
                 <div id="media-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <div class="shimmer h-80 rounded-[2rem]"></div>
@@ -170,12 +170,12 @@
                 </div>
             </div>
 
-            <!-- Tab: Keyword Rules -->
+            <!-- Tab: Automation Rules -->
             <div id="view-automations" class="tab-content space-y-6">
                 <div class="flex justify-between items-end">
                     <div>
-                        <h2 class="text-3xl font-black text-white">Automation Rules</h2>
-                        <p class="text-slate-500 text-sm mt-1">Rules with thumbnails only fire on that specific post.</p>
+                        <h2 class="text-3xl font-black text-white">Active Rules</h2>
+                        <p class="text-slate-500 text-sm mt-1">Rules with thumbnails are assigned to specific posts. Comma-separated keywords are supported.</p>
                     </div>
                     <button onclick="openRuleModal()" class="bg-indigo-600 px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-600/20">
                         <i data-lucide="plus" class="w-5 h-5"></i> New Rule
@@ -195,10 +195,10 @@
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-950/50 text-slate-500 border-b border-slate-900">
                                 <tr>
-                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">Time</th>
-                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">User</th>
-                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">Comment Captured</th>
-                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold">Status</th>
+                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold text-slate-500">Time</th>
+                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold text-slate-500">User</th>
+                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold text-slate-500">Comment Captured</th>
+                                    <th class="px-8 py-5 uppercase text-[10px] tracking-widest font-bold text-slate-500">Status</th>
                                 </tr>
                             </thead>
                             <tbody id="logs-table-body" class="divide-y divide-slate-900"></tbody>
@@ -216,7 +216,7 @@
                         </div>
                         <div>
                             <h3 class="text-2xl font-black text-white tracking-tight">Sync Meta Connection</h3>
-                            <p class="text-slate-500 text-sm">Connect your numeric Instagram account ID and Access Token.</p>
+                            <p class="text-slate-500 text-sm">Connect your Instagram account ID and Access Token.</p>
                         </div>
                     </div>
                     <div class="space-y-6">
@@ -238,7 +238,7 @@
         </div>
     </main>
 
-    <!-- Automation Modal -->
+    <!-- Modal -->
     <div id="modal-rule" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-[100] hidden flex items-center justify-center p-6">
         <div class="glass w-full max-w-xl rounded-[3rem] p-10 space-y-8 shadow-2xl border-white/5 relative">
             <div class="flex justify-between items-center text-white">
@@ -260,12 +260,11 @@
             <div class="space-y-6">
                 <div>
                     <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Trigger Keywords (Comma separated)</label>
-                    <input type="text" id="input-keyword" class="w-full p-5 rounded-2xl font-mono text-indigo-400 text-lg uppercase outline-none focus:ring-2 focus:ring-indigo-500 border-none bg-slate-900" placeholder="e.g. LINK, INFO, PRICE">
-                    <p class="text-[9px] text-slate-600 mt-2">The bot triggers if any of these words appear in a comment.</p>
+                    <input type="text" id="input-keyword" class="w-full p-5 rounded-2xl font-mono text-indigo-400 text-lg uppercase outline-none focus:ring-2 focus:ring-indigo-500 border-none bg-slate-900" placeholder="e.g. LINK, INFO, HELP">
                 </div>
                 <div>
                     <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest">Automated DM Response</label>
-                    <textarea id="input-message" rows="5" class="w-full p-5 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 border-none resize-none bg-slate-900" placeholder="Type the message to be sent instantly..."></textarea>
+                    <textarea id="input-message" rows="5" class="w-full p-5 rounded-2xl text-white outline-none focus:ring-2 focus:ring-indigo-500 border-none resize-none bg-slate-900" placeholder="Type your automated response here..."></textarea>
                 </div>
                 <button onclick="saveRuleToCloud()" id="btn-save-rule" class="bg-indigo-600 w-full py-6 rounded-[2rem] font-black text-lg text-white shadow-2xl mt-4 active:scale-95 transition-all">
                     Activate Automation
@@ -307,16 +306,14 @@
             document.getElementById('status-dot').className = 'w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse';
 
             try {
+                let baseUrl = token.startsWith('IGAAT') ? 'https://graph.instagram.com' : 'https://graph.facebook.com/v19.0';
+                
                 if (token.startsWith('IGAAT')) {
-                    const basicBaseUrl = 'https://graph.instagram.com';
-                    const meRes = await fetch(`${basicBaseUrl}/me?fields=id,username,profile_picture_url&access_token=${token}`);
+                    const meRes = await fetch(`${baseUrl}/me?fields=id,username,profile_picture_url&access_token=${token}`);
                     const meData = await meRes.json();
-                    
-                    if (meData.error) throw new Error(meData.error.message);
-                    
                     if (meData.id) {
                         updateProfileUI(meData);
-                        const mediaRes = await fetch(`${basicBaseUrl}/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&access_token=${token}`);
+                        const mediaRes = await fetch(`${baseUrl}/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&access_token=${token}`);
                         const mediaData = await mediaRes.json();
                         if (mediaData.data) renderMediaGrid(mediaData.data);
                         return;
@@ -324,19 +321,17 @@
                 }
 
                 let igId = id;
-                const fbBaseUrl = 'https://graph.facebook.com/v19.0';
-
                 if (!igId || !igId.startsWith('1784')) {
-                    const pageRes = await fetch(`${fbBaseUrl}/${id}?fields=instagram_business_account&access_token=${token}`);
+                    const pageRes = await fetch(`https://graph.facebook.com/v19.0/${id}?fields=instagram_business_account&access_token=${token}`);
                     const pageData = await pageRes.json();
                     if (pageData.instagram_business_account) igId = pageData.instagram_business_account.id;
                 }
 
-                const profileRes = await fetch(`${fbBaseUrl}/${igId}?fields=username,name,profile_picture_url&access_token=${token}`);
+                const profileRes = await fetch(`https://graph.facebook.com/v19.0/${igId}?fields=username,name,profile_picture_url&access_token=${token}`);
                 const profileData = await profileRes.json();
                 if (profileData.username) updateProfileUI(profileData);
 
-                const mediaRes = await fetch(`${fbBaseUrl}/${igId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=30&access_token=${token}`);
+                const mediaRes = await fetch(`https://graph.facebook.com/v19.0/${igId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=30&access_token=${token}`);
                 const mediaData = await mediaRes.json();
                 if (mediaData.data) renderMediaGrid(mediaData.data);
 
@@ -383,6 +378,7 @@
 
         function setupStreams(uid) {
             const { collection, onSnapshot, doc, getDoc } = window.fb;
+            
             onSnapshot(collection(window.db, "artifacts", window.appId, "users", uid, "automations"), (snap) => {
                 const grid = document.getElementById('rules-grid');
                 grid.innerHTML = '';
@@ -402,7 +398,7 @@
                             ${isSpecific ? `
                                 <div class="flex items-center gap-3 p-3 bg-black/30 rounded-xl border border-white/5">
                                     <img src="${r.media_thumb}" class="w-10 h-10 rounded-lg object-cover">
-                                    <p class="text-[10px] text-slate-500 line-clamp-1 italic">Post Targeting Active</p>
+                                    <p class="text-[10px] text-slate-500 line-clamp-1 italic text-[9px]">Post Targeting Active</p>
                                 </div>
                             ` : ''}
 
@@ -426,9 +422,9 @@
                     body.innerHTML += `
                         <tr class="hover:bg-indigo-500/5 transition-all text-xs">
                             <td class="px-8 py-6 text-slate-500 font-mono">${time}</td>
-                            <td class="px-8 py-6 font-black text-white">@${log.user}</td>
+                            <td class="px-8 py-6 font-black text-white text-sm">@${log.user}</td>
                             <td class="px-8 py-6 text-slate-400 italic">"${log.comment}"</td>
-                            <td class="px-8 py-6"><span class="px-4 py-1.5 rounded-full ${log.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} font-black uppercase text-[8px] tracking-widest border">${log.status}</span></td>
+                            <td class="px-8 py-6"><span class="px-4 py-1.5 rounded-full ${log.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'} text-[10px] font-black border uppercase">${log.status}</span></td>
                         </tr>
                     `;
                 });
